@@ -1,0 +1,838 @@
+import * as React from 'react';
+import PropTypes from 'prop-types';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import RD from './Rd';
+import CRD from './Crdform';
+import Flote from'./Flotform';
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
+export default function BasicTabs() {
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  return (
+    <Box sx={{ width: '100%',bgcolor: 'background.paper' }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider'  }}  >
+        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example"  
+         TabIndicatorProps={{ sx: { display: 'none' } }}
+         sx={{
+           '& .MuiTabs-flexContainer': {
+             flexWrap: 'wrap',
+           },
+         }}>
+          <Tab label="Fiche Revendeur" {...a11yProps(0)} />
+          <Tab label="Fiche Client Revendeur" {...a11yProps(1)} />
+          <Tab label="Fiche Camions Revendeur" {...a11yProps(2)} />
+          <Tab label="Fiche Realisation Revendeur" {...a11yProps(3)} />
+          <Tab label="Liste Detail Revendeur" {...a11yProps(4)} />
+         
+        </Tabs>
+      </Box>
+      <TabPanel value={value} index={0}>
+        <RD/>
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+      <CRD/>
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+       <Flote/>
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        Item 4
+      </TabPanel>
+      <TabPanel value={value} index={4}>
+        Item 5
+      </TabPanel>
+    </Box>
+  );
+}
+/////COMPONENET RD NEW 
+
+< form>
+<div  >
+<div><InputLabel id="District">District</InputLabel>
+        <Select
+          labelId="Dist"
+          id="Dist"
+          value={dist}
+          label="District"
+          onChange={handleChange}
+        >
+          <MenuItem value={10}>alger</MenuItem>
+          <MenuItem value={20}>ghardaia</MenuItem>
+          <MenuItem value={30}>annaba</MenuItem>
+        </Select></div>
+
+  <div>  <InputLabel id="Entite">Entite</InputLabel>
+        <Select
+        // sx={{ minWidth: 150 }}
+          labelId="Ent"
+          id="Ent"
+          value={ent}
+          label="Entite"
+          onChange={handleEnt}
+        >
+          <MenuItem value={10}>alger</MenuItem>
+          <MenuItem value={20}>ghardaia</MenuItem>
+          <MenuItem value={30}>annaba</MenuItem>
+        </Select></div>
+
+
+        <div>
+
+        <InputLabel id="Centre">Centre</InputLabel>
+        <Select
+          labelId="Cnt"
+          id="Cnt"
+          value={cnt}
+          label="Centre"
+          onChange={handleCnt}
+        >
+          <MenuItem value={10}>alger</MenuItem>
+          <MenuItem value={20}>ghardaia</MenuItem>
+          <MenuItem value={30}>annaba</MenuItem>
+        </Select>
+
+
+
+          
+        </div>
+   </div>
+
+ {/* ///////WILAYA COMMUNE DIV */}
+<div >
+  <div>
+<InputLabel id="Wilaya">Wilaya</InputLabel>
+        <Select
+          labelId="WLY"
+          id="Wly"
+          value={wilaya}
+          label="Wilaya"
+          onChange={handleWilaya}
+        >
+          <MenuItem value={10}>alger</MenuItem>
+          <MenuItem value={20}>ghardaia</MenuItem>
+          <MenuItem value={30}>annaba</MenuItem>
+        </Select>
+        </div>
+        <div>
+
+        <InputLabel id="Wilaya">Commune</InputLabel>
+        <Select
+          labelId="CMN"
+          id="Cmn"
+          value={commune}
+          label="Commune"
+          onChange={handleCommune}
+        >
+          <MenuItem value={10}>alger</MenuItem>
+          <MenuItem value={20}>ghardaia</MenuItem>
+          <MenuItem value={30}>annaba</MenuItem>
+        </Select>
+        </div>
+
+  </div>
+
+
+
+
+
+
+<div > 
+
+        
+<TextField
+          disabled
+          id="outlined-disabled"
+          label="Disabled"
+          defaultValue="RDCode"
+        />
+<TextField
+          required
+          id="Raison sociale"
+          label="Raison sociale"
+          defaultValue="Raison sociale"
+        />
+
+
+
+<TextField
+          required
+          id="Adresse"
+          label="Adresse"
+          defaultValue="Adresse"
+        />
+</div>
+
+
+<div > 
+<TextField
+          required
+          id="tel"
+          label="Telephone"
+          defaultValue="00-00-00-00-00"
+        />
+
+
+
+<TextField
+          required
+          id="Fax"
+          label="Fax"
+          defaultValue="00-00-00-00-00"
+        />
+       
+        <TextField
+         
+          id="Mobile"
+          label="Mobile"
+          defaultValue="00-00-00-00-00"
+        />
+        <TextField
+         
+          id="Email"
+          label="Email"
+          defaultValue="abc@aaa.com"
+        />
+
+
+</div>
+<div >
+<TextField
+          required
+          id="IMP"
+          label="Article imposition"
+          defaultValue="Article imposition"
+        />
+
+
+
+<TextField
+          required
+          id="Registre"
+          label="N° Registre de commerce"
+          defaultValue="Registre"
+        />
+       
+        <TextField
+         
+          id="IDF"
+          label="Identification Fiscale"
+          defaultValue="Identification Fiscale"
+        />
+       
+  
+  
+   </div>
+<div > 
+<div>
+<TextField
+          required
+          id="DomBanc"
+          label="Domiciliation bancaire"
+          defaultValue="Domiciliation bancaire"
+        />
+        </div>
+       <div>
+
+       {/* <InputLabel id="mode">Mode de paiment</InputLabel> */}
+        <Select
+          labelId="mode"
+          id="mode"
+          value={mode}
+          label="mode"
+          onChange={handlemode}
+        >
+          <MenuItem value={10}>Espece</MenuItem>
+          <MenuItem value={20}>cheque</MenuItem>
+         
+        </Select>
+       </div>
+      
+
+
+
+
+</div>
+<div class="div12">
+<Button 
+         variant="contained" 
+         color="primary"
+         size="large" 
+         type="submit" fullWidth>Ajouter
+         </Button>
+  
+  
+  </div>
+
+</form>
+
+
+
+import * as React from 'react';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
+import Select from '@mui/material/Select';
+import Button from '@mui/material/Button';
+import './styles.scss';
+ const  Crdform = ()=> {
+//  event and state district select
+const [dist, setdist] = React.useState('');
+
+const handleChange = (event) => {
+  setdist(event.target.value);
+};
+
+//  event and state centre select
+const [cnt, setcnt] = React.useState('');
+
+const handleCnt = (event) => {
+  setcnt(event.target.value);
+};
+
+
+//  event and state entite select
+const [ent, setent] = React.useState('');
+
+const handleEnt = (event) => {
+  setent(event.target.value);
+};
+
+
+// EVENT WILAYA SELECT 
+const [wilaya, setwilaya] = React.useState('');
+
+const handleWilaya = (event) => {
+  setwilaya(event.target.value);
+};
+// EVENT commune SELECT 
+const [commune, setcommune] = React.useState('');
+
+const handleCommune= (event) => {
+  setcommune(event.target.value);
+};
+
+
+
+  return (
+
+    <div>
+<h1> code revendeur nom de revendeur</h1>
+< form class="parent">
+<div class="div1"  >
+<div><InputLabel id="District">District</InputLabel>
+        <Select
+          labelId="Dist"
+          id="Dist"
+          value={dist}
+          label="District"
+          onChange={handleChange}
+        >
+          <MenuItem value={10}>alger</MenuItem>
+          <MenuItem value={20}>ghardaia</MenuItem>
+          <MenuItem value={30}>annaba</MenuItem>
+        </Select></div>
+
+  <div>  <InputLabel id="Entite">Entite</InputLabel>
+        <Select
+        // sx={{ minWidth: 150 }}
+          labelId="Ent"
+          id="Ent"
+          value={ent}
+          label="Entite"
+          onChange={handleEnt}
+        >
+          <MenuItem value={10}>alger</MenuItem>
+          <MenuItem value={20}>ghardaia</MenuItem>
+          <MenuItem value={30}>annaba</MenuItem>
+        </Select></div>
+
+
+        <div>
+
+        <InputLabel id="Centre">Centre</InputLabel>
+        <Select
+          labelId="Cnt"
+          id="Cnt"
+          value={cnt}
+          label="Centre"
+          onChange={handleCnt}
+        >
+          <MenuItem value={10}>alger</MenuItem>
+          <MenuItem value={20}>ghardaia</MenuItem>
+          <MenuItem value={30}>annaba</MenuItem>
+        </Select>
+
+
+
+          
+        </div>
+   </div>
+
+ {/* ///////WILAYA COMMUNE DIV */}
+<div class="div2">
+  <div>
+<InputLabel id="Wilaya">Wilaya</InputLabel>
+        <Select
+          labelId="WLY"
+          id="Wly"
+          value={wilaya}
+          label="Wilaya"
+          onChange={handleWilaya}
+        >
+          <MenuItem value={10}>alger</MenuItem>
+          <MenuItem value={20}>ghardaia</MenuItem>
+          <MenuItem value={30}>annaba</MenuItem>
+        </Select>
+        </div>
+        <div>
+
+        <InputLabel id="Wilaya">Commune</InputLabel>
+        <Select
+          labelId="CMN"
+          id="Cmn"
+          value={commune}
+          label="Commune"
+          onChange={handleCommune}
+        >
+          <MenuItem value={10}>alger</MenuItem>
+          <MenuItem value={20}>ghardaia</MenuItem>
+          <MenuItem value={30}>annaba</MenuItem>
+        </Select>
+        </div>
+
+  </div>
+
+
+<div class="div3"> 
+
+
+
+
+
+</div>
+
+
+
+<div class="div7"> 
+
+        
+<TextField
+          disabled
+          id="RD"
+          label="Disabled"
+          defaultValue="RDCode"
+        />
+
+                
+<TextField
+          disabled
+          id="CRD"
+          label="Disabled"
+          defaultValue="CRDCode"
+        />
+<TextField
+          required
+          id="Raison sociale"
+          label="Raison sociale"
+          defaultValue="Raison sociale"
+        />
+
+
+
+<TextField
+          required
+          id="Adresse"
+          label="Adresse"
+          defaultValue="Adresse"
+        />
+</div>
+
+
+<div class="div9"> 
+<TextField
+          required
+          id="tel"
+          label="Telephone"
+          defaultValue="00-00-00-00-00"
+        />
+
+
+
+<TextField
+          required
+          id="Fax"
+          label="Fax"
+          defaultValue="00-00-00-00-00"
+        />
+       
+        <TextField
+         
+          id="Mobile"
+          label="Mobile"
+          defaultValue="00-00-00-00-00"
+        />
+        <TextField
+         
+          id="Email"
+          label="Email"
+          defaultValue="abc@aaa.com"
+        />
+
+
+</div>
+<div class="div10">
+<TextField
+          required
+          id="NAX"
+          label="N° autorisation d'exploitation"
+          defaultValue="Autorisation d'exploitation"
+        />
+
+
+
+<TextField
+          required
+          id="Registre"
+          label="N° Registre de commerce"
+          defaultValue="Registre"
+        />
+       
+        <TextField
+         
+          id="IDF"
+          label="Identification Fiscale"
+          defaultValue="Identification Fiscale"
+        />
+       
+  
+  
+   </div>
+<div class="div11"> 
+<div>
+<TextField
+          required
+          id="PM"
+          label="Prevision Mensueil"
+          defaultValue="Prevision"
+        />
+        </div>
+       <div>
+       <TextField
+          required
+          id="PN"
+          label="Prevision Annueil"
+          defaultValue="Prevision "
+        />
+    
+       </div>
+      
+
+
+
+
+</div>
+<div class="div12">
+<Button 
+         variant="contained" 
+         color="primary"
+         size="" 
+         type="submit" fullWidth>Ajouter
+         </Button>
+  
+  
+  </div>
+
+</form>
+</div>
+  );
+}
+export default Crdform;
+import * as React from 'react';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
+import Select from '@mui/material/Select';
+import Button from '@mui/material/Button';
+import './styles.scss';
+ const  FlotForm = ()=> {
+//  event and state district select
+const [dist, setdist] = React.useState('');
+
+const handleChange = (event) => {
+  setdist(event.target.value);
+};
+
+//  event and state centre select
+const [cnt, setcnt] = React.useState('');
+
+const handleCnt = (event) => {
+  setcnt(event.target.value);
+};
+
+
+//  event and state entite select
+const [ent, setent] = React.useState('');
+
+const handleEnt = (event) => {
+  setent(event.target.value);
+};
+
+
+// EVENT WILAYA SELECT 
+const [wilaya, setwilaya] = React.useState('');
+
+const handleWilaya = (event) => {
+  setwilaya(event.target.value);
+};
+// EVENT commune SELECT 
+const [commune, setcommune] = React.useState('');
+
+const handleCommune= (event) => {
+  setcommune(event.target.value);
+};
+
+
+
+  return (
+
+<div>
+<h1> code revendeur nom de revendeur</h1>
+
+
+< form class="parent">
+<div class="div1"  >
+<div><InputLabel id="District">District</InputLabel>
+        <Select
+          labelId="Dist"
+          id="Dist"
+          value={dist}
+          label="District"
+          onChange={handleChange}
+        >
+          <MenuItem value={10}>alger</MenuItem>
+          <MenuItem value={20}>ghardaia</MenuItem>
+          <MenuItem value={30}>annaba</MenuItem>
+        </Select></div>
+
+  <div>  <InputLabel id="Entite">Entite</InputLabel>
+        <Select
+        // sx={{ minWidth: 150 }}
+          labelId="Ent"
+          id="Ent"
+          value={ent}
+          label="Entite"
+          onChange={handleEnt}
+        >
+          <MenuItem value={10}>alger</MenuItem>
+          <MenuItem value={20}>ghardaia</MenuItem>
+          <MenuItem value={30}>annaba</MenuItem>
+        </Select></div>
+
+
+        <div>
+
+        <InputLabel id="Centre">Centre</InputLabel>
+        <Select
+          labelId="Cnt"
+          id="Cnt"
+          value={cnt}
+          label="Centre"
+          onChange={handleCnt}
+        >
+          <MenuItem value={10}>alger</MenuItem>
+          <MenuItem value={20}>ghardaia</MenuItem>
+          <MenuItem value={30}>annaba</MenuItem>
+        </Select>
+
+
+
+          
+        </div>
+   </div>
+
+ {/* ///////WILAYA COMMUNE DIV */}
+<div class="div2">
+  <div>
+<InputLabel id="Wilaya">Wilaya</InputLabel>
+        <Select
+          labelId="WLY"
+          id="Wly"
+          value={wilaya}
+          label="Wilaya"
+          onChange={handleWilaya}
+        >
+          <MenuItem value={10}>alger</MenuItem>
+          <MenuItem value={20}>ghardaia</MenuItem>
+          <MenuItem value={30}>annaba</MenuItem>
+        </Select>
+        </div>
+        <div>
+
+        <InputLabel id="Wilaya">Commune</InputLabel>
+        <Select
+          labelId="CMN"
+          id="Cmn"
+          value={commune}
+          label="Commune"
+          onChange={handleCommune}
+        >
+          <MenuItem value={10}>alger</MenuItem>
+          <MenuItem value={20}>ghardaia</MenuItem>
+          <MenuItem value={30}>annaba</MenuItem>
+        </Select>
+        </div>
+
+                
+
+
+  </div>
+
+
+
+
+
+
+<div class="div7"> 
+
+
+
+<TextField
+          required
+          id="CV"
+          label="Vehicule"
+          defaultValue="code vehicule"
+        />
+
+
+
+<TextField
+          required
+          id="CM"
+          label="Marque"
+          defaultValue="code Marque"
+        />
+       
+        <TextField
+          required
+          id="  CM"
+          label="Model"
+          defaultValue="code Model"
+        />
+       
+
+
+</div>
+<div class="div10">
+<TextField
+          required
+          id="Imm"
+          label="Matricule"
+          defaultValue="Matricule"
+        />
+
+
+
+<TextField
+          required
+          id="NSR"
+          label="N° SERIE"
+          defaultValue="N° Serie"
+        />
+       
+       <TextField
+          required
+          id="cap"
+          label="Capacité"
+          defaultValue="Capacité"
+        />
+       
+
+
+
+
+</div>
+
+
+<div class="div9"> 
+<TextField
+          required
+          id="Aut"
+          label="N autorisation  de transport"
+          defaultValue="autorisation  de transport"
+        />
+
+
+
+<TextField
+          required
+          id="carteR"
+          label="N° Carte Rouge"
+          defaultValue="Carte Rouge"
+        />
+       
+        <TextField
+         
+          id="Cert"
+          label="N° Certificat jaugeage"
+          defaultValue="N° Certificat jaugeage"
+        />
+      
+
+
+</div>
+
+<div class="div12">
+<Button 
+         variant="contained" 
+         color="primary"
+         size="large" 
+         type="submit" fullWidth>Ajouter
+         </Button>
+  
+  
+  </div>
+
+</form>
+</div>
+  );
+}
+export default FlotForm ;

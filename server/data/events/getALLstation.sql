@@ -1,0 +1,11 @@
+/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT  [id]
+      ,[CODE_STATION]
+      ,[NOM_STATION]
+      ,[CODE_DISTRICT]
+      ,[CODE_WILAYA]
+      ,[TYPE_ACTIVITE]
+      ,[NBR_loyer]
+      ,[ETATS]
+      ,[Wilaya]
+  FROM [ProductOrderDB].[dbo].[stationss]

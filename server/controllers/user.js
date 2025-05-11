@@ -15,46 +15,60 @@ const bcrypt = require("bcryptjs");
 
 // Fonction pour Login
 const loginUser = async (req, res, next) => {
-  try {
-    const { username, password } = req.body;
+  const { username, password } = req.body;
 
-    if (!username || !password) {
-      return res.status(400).json({ message: "Nom d'utilisateur et mot de passe sont requis!" });
+
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username and password are required" });
+  }
+
+  try {
+    const pool = await sql.connect(config.sql);
+    const result = await pool
+      .request()
+      .input('COMPTE', sql.VarChar, username)
+      .query('SELECT id, compte, pass FROM [dbo].[USER] WHERE COMPTE = @COMPTE');
+
+    const user = result.recordset[0];
+
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    try {
-      const pool = await sql.connect(config.sql);
-      const result = await pool
-        .request()
-        .input('COMPTE', sql.VarChar, username)
-        .query('SELECT * FROM [dbo].[USER] WHERE COMPTE = @COMPTE');
 
-      const user = result.recordset[0];
+    const isPasswordValid = await bcrypt.compare(password, user.pass);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
-      if (!user) {
-        return res.status(401).json({ message: "Nom d'utilisateur est incorrect!" });
-      }
+    const payload = {
+      id: user.id,
+      username: user.compte
+    };
 
-      const isPasswordValid = await bcrypt.compare(password, user.pass);
-      if (!isPasswordValid) {
-        return res.status(401).json({ message: "Mot de passe est incorrect!" });
-      }
 
-      const payload = {
+    const token = jwt.sign(
+      payload,
+      secret,
+      {}
+    );
+
+    // Secure HTTP-only cookie alternative (optional)
+    // res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' });
+
+    return res.status(200).json({ 
+      message: 'Login successful',
+      token,
+      user: {
         id: user.id,
         username: user.compte
-      };
+      }
+    });
 
-      const token = jwt.sign(payload, secret, {});
-
-      return res.status(200).json({ message: 'Connexion réussie!', token });
-    
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: 'Erreur de connexion à la base de données!' });
-    }
   } catch (error) {
-    res.status(400).send(error.message);
+    console.error('Login error:', error);
+    next(error); 
   }
 };
 

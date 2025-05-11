@@ -1,6 +1,5 @@
 /****** Script for SelectTopNRows command from SSMS  ******/
-SELECT  [id]
-      ,[CODE_STATION]
+SELECT [CODE_STATION]
       ,[NOM_STATION]
       ,[CODE_DISTRICT]
       ,[CODE_WILAYA]
@@ -8,4 +7,4 @@ SELECT  [id]
       ,[NBR_loyer]
       ,[ETATS]
       ,[Wilaya]
-  FROM [ProductOrderDB].[dbo].[stationss]
+  FROM [my_db].[dbo].[STATIONS]

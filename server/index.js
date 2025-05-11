@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const routes = require('./routes/route');
 const userRouter =require('./routes/user') ;
 
-const { createUser, seedUsers } = require('./createUser/createUser');
+// const { createUser, seedUsers } = require('./createUser/createUser');
 
 const app = express();
 
@@ -19,7 +19,6 @@ app.use(express.json());
 app.use('/', routes.routes);
 app.use("/user", userRouter.routes);
 
-seedUsers();
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

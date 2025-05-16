@@ -10,20 +10,41 @@ const controller = require('../controllers/controller');
 
 
 router.get('/api/getAllStation', controller.getAllStation);
-router.get('/api/getAllUsers', controller.getAllUsers );
+router.get('/api/getAllOperateur', controller.getAllOperateur );
+router.get('/api/getAllLoyer', controller.getAllLoyer);
+router.get('/api/getAllContrat', controller.getAllContrat);
 
-router.get('/api/getAllCategories', controller.getAllCategories);
-router.get('/api/getAllOrders', controller.getAllOrders);
-router.get('/api/getAllProducts', controller.getAllProducts);
+// get by id
 
-//get by id 
+router.get('/api/getStationById/:id', controller.getStationById);
+router.get('/api/getLoyerById/:id', controller.getLoyerById);
+router.get('/api/getContratById/:id', controller.getContratById);
+router.get('/api/getOperateurById/:id', controller.getOperateurById);
 
-router.get('/api/getProductsByCategory/:id', controller.getProductsByCategory);
+
+// upgrade 
+
+router.put('/api/updateStation/:id', controller.updateStation);
+router.put('/api/updateLoyer/:id', controller.updateLoyer);
+router.put('/api/updateOperateur/:id', controller.updateOperateur);
+
+// Add
+router.post('/api/addLoyer', controller.addLoyer);
+router.post('/api/addContrat', controller.addContrat);
+router.post('/api/addStation', controller.addStation);
+router.post('/api/addOperateur', controller.addOperateur);
+
+// router.get('/api/getAllCategories', controller.getAllCategories);
+// router.get('/api/getAllOrders', controller.getAllOrders);
+// router.get('/api/getAllProducts', controller.getAllProducts);
+
+// //get by id 
+
+// router.get('/api/getProductsByCategory/:id', controller.getProductsByCategory);
 
 
 ///:::::::::::::::::insrt:::::::::::::::::::////////
-router.post('/api/createProduct', controller.createProduct);
-
+// router.post('/api/createProduct', controller.createProduct);
 
 
 //:::::::::::::::::::::::update::::::::::::::::::::::://

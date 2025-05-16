@@ -13,7 +13,7 @@ const router = express.Router();
 // Login route
 router.post('/api/auth/login', user.loginUser);
 // Logout route
-// router.post('/api/auth/logout', user.logoutUser);
+router.post('/api/auth/logout', user.logoutUser);
 
 module.exports = {
     routes: router

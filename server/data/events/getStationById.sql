@@ -1,0 +1,13 @@
+SELECT 
+    CODE_STATION,
+    NOM_STATION,
+    CODE_DISTRICT,
+    CODE_WILAYA,
+    TYPE_ACTIVITE,
+    NBR_LOYER,
+    ETATS,
+    Wilaya
+FROM 
+    [my_db].[dbo].[STATIONS]
+WHERE 
+    CODE_STATION = @stationId

@@ -15,14 +15,14 @@ const bcrypt = require("bcryptjs");
 
 // Fonction pour Login
 const loginUser = async (req, res, next) => {
-  const { username, password } = req.body;
-
-
-  if (!username || !password) {
-    return res.status(400).json({ message: "Username and password are required" });
-  }
-
+  
   try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+    return res.status(400).json({ message: "Username and password are required" });
+    }
+
     const pool = await sql.connect(config.sql);
     const result = await pool
       .request()
@@ -33,13 +33,13 @@ const loginUser = async (req, res, next) => {
 
 
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Invalid user" });
     }
 
 
     const isPasswordValid = await bcrypt.compare(password, user.pass);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Invalid password" });
     }
 
     const payload = {
@@ -53,9 +53,6 @@ const loginUser = async (req, res, next) => {
       secret,
       {}
     );
-
-    // Secure HTTP-only cookie alternative (optional)
-    // res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' });
 
     return res.status(200).json({ 
       message: 'Login successful',
@@ -72,7 +69,18 @@ const loginUser = async (req, res, next) => {
   }
 };
 
+// fonction pour Logout
 
+const logoutUser = (req, res) => {
+    // Clear the JWT token from cookies
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+    });
+
+    return res.status(200).json({ message: 'Logged out successfully' });
+};
 
 
 
@@ -214,5 +222,6 @@ const loginUser = async (req, res, next) => {
 // };
 
 module.exports = {
-  loginUser
+  loginUser,
+  logoutUser
 };

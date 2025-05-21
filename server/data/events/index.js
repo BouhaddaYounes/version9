@@ -288,6 +288,9 @@ const updateStation = async (stationId, etat) => {
         const result = await pool.request()
             .input('stationId', sql.VarChar, stationId) // تعديل هنا
             .input('etat', sql.Int, etat)
+           
+    //  .input('etat', sql.Int, etat.type)type d'activitre
+            
             .query(sqlQueries.updateStation);
 
         return result.rowsAffected[0] > 0;

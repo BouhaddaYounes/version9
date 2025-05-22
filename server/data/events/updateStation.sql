@@ -1,4 +1,4 @@
 UPDATE [my_db].[dbo].[STATIONS]
-SET ETATS = @Data.ETAT,
-    ACTIVITE = @Data.ACTIVITE,
-WHERE CODE_STATION = @stationId
+SET ETATS = @etat,
+    TYPE_ACTIVITE = @activite
+WHERE CODE_STATION = @stationId;

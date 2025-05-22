@@ -113,27 +113,58 @@ const getOperateurById = async (req, res) => {
 
 // upgrade
 
+// const updateStation = async (req, res) => {
+//     try {
+//         const stationId = req.params.id; // بدون parseInt لأنه string
+//         const { etat } = req.body;
+
+//         if (![1, 2].includes(etat)) {
+//             return res.status(400).json({ message: "État invalide. Utilisez 1 ou 2." });
+//         }
+
+//         const success = await Data.updateStation(stationId, etat);
+
+//         if (success) {
+//             res.status(200).json({ message: 'État de la station mis à jour avec succès' });
+//         } else {
+//             res.status(404).json({ message: 'Station introuvable ou non modifiée' });
+//         }
+//     } catch (error) {
+//         console.error('Erreur dans updateStation:', error);
+//         res.status(500).json({ message: error.message });
+//     }
+// };
 const updateStation = async (req, res) => {
-    try {
-        const stationId = req.params.id; // بدون parseInt لأنه string
-        const { etat } = req.body;
+  try {
+    const stationId = req.params.id;
+    // const { ETATS, TYPE_ACTIVITE } = req.body;
+    const ETATS = req.body.ETATS ?? req.body.etat;
+    const TYPE_ACTIVITE = req.body.TYPE_ACTIVITE ?? req.body.activite;
 
-        if (![1, 2].includes(etat)) {
-            return res.status(400).json({ message: "État invalide. Utilisez 1 ou 2." });
-        }
-
-        const success = await Data.updateStation(stationId, etat);
-
-        if (success) {
-            res.status(200).json({ message: 'État de la station mis à jour avec succès' });
-        } else {
-            res.status(404).json({ message: 'Station introuvable ou non modifiée' });
-        }
-    } catch (error) {
-        console.error('Erreur dans updateStation:', error);
-        res.status(500).json({ message: error.message });
+    if (![0, 1, 2].includes(ETATS)) {
+      return res.status(400).json({ message: "État invalide. Utilisez 0, 1 ou 2." });
     }
+
+    if (![1, 2].includes(TYPE_ACTIVITE)) {
+        return res.status(400).json({ message: "Type d'activité invalide. Utilisez 1 ou 2." });
+    }
+
+
+    // const success = await Data.updateStation(stationId, ETATS, TYPE_ACTIVITE);
+    const success = await Data.updateStation(stationId, { ETATS, TYPE_ACTIVITE });
+
+
+    if (success) {
+      res.status(200).json({ message: 'Station mise à jour avec succès' });
+    } else {
+      res.status(404).json({ message: 'Station introuvable ou non modifiée' });
+    }
+  } catch (error) {
+    console.error('Erreur dans updateStation:', error);
+    res.status(500).json({ message: error.message });
+  }
 };
+
 
 const updateOperateur = async (req, res) => {
     try {

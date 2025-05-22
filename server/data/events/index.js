@@ -280,17 +280,15 @@ const getOperateurById = async (operateurId) => {
 
 // upgrade
 
-const updateStation = async (stationId, etat) => {
+const updateStation = async (stationId, data) => {
     try {
         let pool = await sql.connect(config.sql);
         const sqlQueries = await utils.loadSqlQueries('events');
 
         const result = await pool.request()
-            .input('stationId', sql.VarChar, stationId) // تعديل هنا
-            .input('etat', sql.Int, etat)
-           
-    //  .input('etat', sql.Int, etat.type)type d'activitre
-            
+            .input('stationId', sql.VarChar, stationId)
+            .input('etat', sql.Int, data.ETATS)
+            .input('activite', sql.Int, data.TYPE_ACTIVITE)
             .query(sqlQueries.updateStation);
 
         return result.rowsAffected[0] > 0;

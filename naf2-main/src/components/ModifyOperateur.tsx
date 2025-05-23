@@ -7,7 +7,7 @@ import {
   DialogTitle,
   TextField,
   Box,
-  IconButton,
+  IconButton
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -18,7 +18,7 @@ interface ModifyOperateurProps {
     RAISON_SOCIAL: string;
     ADRESSE: string;
     TEL: string;
-    DOMICILIATION: string;
+    BANQUE: string;
     NIF: string;
   };
 }
@@ -30,35 +30,26 @@ const ModifyOperateur: React.FC<ModifyOperateurProps> = ({ operateur }) => {
     RAISON_SOCIAL: operateur.RAISON_SOCIAL,
     ADRESSE: operateur.ADRESSE,
     TEL: operateur.TEL,
-    DOMICILIATION: operateur.DOMICILIATION,
-
+    BANQUE: operateur.BANQUE,
     NIF: operateur.NIF,
   });
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      console.log('CODE_OPERATEUR:', operateur.CODE_OPERATEUR);
+
       const response = await fetch(`http://localhost:5000/api/updateOperateur/${operateur.CODE_OPERATEUR}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
@@ -73,109 +64,53 @@ const ModifyOperateur: React.FC<ModifyOperateurProps> = ({ operateur }) => {
     }
   };
 
-  const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this operateur?')) {
-      try {
-        const response = await fetch(`http://localhost:5000/api/deleteOperateur/${operateur.CODE_OPERATEUR}`, {
-          method: 'DELETE',
-        });
+  // const handleDelete = async () => {
+  //   if (window.confirm('Are you sure you want to delete this operateur?')) {
+  //     try {
+  //       const response = await fetch(`http://localhost:5000/api/deleteOperateur/${operateur.CODE_OPERATEUR}`, {
+  //         method: 'DELETE',
+  //       });
 
-        if (response.ok) {
-          window.location.reload();
-        } else {
-          console.error('Failed to delete operateur');
-        }
-      } catch (error) {
-        console.error('Error deleting operateur:', error);
-      }
-    }
-  };
+  //       if (response.ok) {
+  //         window.location.reload();
+  //       } else {
+  //         console.error('Failed to delete operateur');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error deleting operateur:', error);
+  //     }
+  //   }
+  // };
 
   return (
     <Box>
       <IconButton onClick={handleClickOpen} color="primary">
         <EditIcon />
       </IconButton>
-      <IconButton onClick={handleDelete} color="error">
+      {/* <IconButton onClick={handleDelete} color="error">
         <DeleteIcon />
-      </IconButton>
+      </IconButton> */}
 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Modifier Opérateur</DialogTitle>
         <DialogContent>
           <Box
             component="form"
-            sx={{
-              '& .MuiTextField-root': { m: 1, width: '25ch' },
-            }}
+            sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
             noValidate
             autoComplete="off"
           >
-            <TextField
-              margin="dense"
-              name="CODE_OPERATEUR"
-              label="Code Opérateur"
-              type="text"
-              fullWidth
-              value={formData.CODE_OPERATEUR}
-              onChange={handleChange}
-              disabled
-            />
-            <TextField
-              margin="dense"
-              name="RAISON_SOCIAL"
-              label="Raison Social"
-              type="text"
-              fullWidth
-              value={formData.RAISON_SOCIAL}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="dense"
-              name="ADRESSE"
-              label="Adresse"
-              type="text"
-              fullWidth
-              value={formData.ADRESSE}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="dense"
-              name="TEL"
-              label="Téléphone"
-              type="text"
-              fullWidth
-              value={formData.TEL}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="dense"
-              name="DOMICILIATION"
-              label="Domiciliation"
-              type="text"
-              fullWidth
-              value={formData.DOMICILIATION}
-              onChange={handleChange}
-            />
-            
-            <TextField
-              margin="dense"
-              name="NIF"
-              label="NIF"
-              type="text"
-              fullWidth
-              value={formData.NIF}
-              onChange={handleChange}
-            />
+            <TextField name="CODE_OPERATEUR" label="Code Opérateur" fullWidth disabled value={formData.CODE_OPERATEUR} />
+            <TextField name="RAISON_SOCIAL" label="Raison Social" fullWidth disabled value={formData.RAISON_SOCIAL} />
+            <TextField name="ADRESSE" label="Adresse" fullWidth disabled value={formData.ADRESSE} />
+            <TextField name="TEL" label="Téléphone" fullWidth value={formData.TEL} onChange={handleChange} />
+            <TextField name="BANQUE" label="Banque" fullWidth value={formData.BANQUE} onChange={handleChange} />
+            <TextField name="NIF" label="NIF" fullWidth disabled value={formData.NIF} />
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Annuler
-          </Button>
-          <Button onClick={handleSubmit} color="primary">
-            Enregistrer
-          </Button>
+          <Button onClick={handleClose} color="primary">Annuler</Button>
+          <Button onClick={handleSubmit} color="primary">Enregistrer</Button>
         </DialogActions>
       </Dialog>
     </Box>

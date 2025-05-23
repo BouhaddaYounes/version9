@@ -3,12 +3,12 @@ import axios from 'axios';
 import { RootState } from '../store';
 
 interface Operateur {
-  id: string;
+  ID: number;
   CODE_OPERATEUR: string;
   RAISON_SOCIALE: string;
   ADRESSE: string;
   TEL: string;
-  DOMICILIATION: string;
+  BANQUE: string;
   NIF: string;
 }
 
@@ -40,6 +40,32 @@ export const fetchOperateurs = createAsyncThunk(
   }
 );
 
+export const updateOperateur = createAsyncThunk<
+  Operateur,
+  Operateur,
+  { rejectValue: string }
+>('operateur/updateOperateur', async (updatedData, thunkAPI) => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/updateOperateur/${updatedData.CODE_OPERATEUR}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedData),
+    });
+
+    if (!response.ok) {
+      return thunkAPI.rejectWithValue('Failed to update operateur');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    return thunkAPI.rejectWithValue('Error while updating operateur');
+  }
+});
+
+
+
+
 const operateurSlice = createSlice({
   name: 'operateurs',
   initialState,
@@ -57,7 +83,24 @@ const operateurSlice = createSlice({
       .addCase(fetchOperateurs.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch operateurs';
-      });
+      })
+      .addCase(updateOperateur.pending, (state: OperateurState) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateOperateur.fulfilled, (state: OperateurState, action: PayloadAction<Operateur>) => {
+        state.loading = false;
+        const index = state.operateurs.findIndex(
+          (op) => op.CODE_OPERATEUR === action.payload.CODE_OPERATEUR
+        );
+        if (index !== -1) {
+          state.operateurs[index] = action.payload;
+        }
+      })
+      .addCase(updateOperateur.rejected, (state: OperateurState, action) => {
+        state.loading = false;
+        state.error = action.payload || 'Unknown error';
+      })
   },
 });
 

@@ -1,3 +1,4 @@
 UPDATE [my_db].[dbo].[OPERATEUR]
-SET DOMICILIATION = @domiciliation
-WHERE ID = @operateurId
+SET TEL = @tel,
+    BANQUE = @banque
+WHERE CODE_OPERATEUR = @operateurId

@@ -56,21 +56,21 @@ const Colaborator: React.FC = () => {
       headerAlign: "center"
     },
     {
-      field: "telephone",
+      field: "TEL",
       headerName: "TELEPHONE",
       flex: 1,
       align: "center",
       headerAlign: "center"
     },
     {
-      field: "DOMICILIATION",
-      headerName: "DOMICILIATION",
+      field: "BANQUE",
+      headerName: "BANQUE",
       flex: 1,
       align: "center",
       headerAlign: "center"
     },
     {
-      field: "nif",
+      field: "NIF",
       headerName: "NIF",
       flex: 1,
       align: "center",

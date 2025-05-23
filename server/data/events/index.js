@@ -299,14 +299,15 @@ const updateStation = async (stationId, data) => {
     }
 };
 
-const updateOperateur = async (operateurId, domiciliation) => {
+const updateOperateur = async (operateurId, etat) => {
     try {
         let pool = await sql.connect(config.sql);
-        const sqlQueries = await utils.loadSqlQueries('events'); // أو 'operateurs' إذا عندك مجلد خاص
-
+        // const sqlQueries = await utils.loadSqlQueries('events'); // أو 'operateurs' إذا عندك مجلد خاص
+        const sqlQueries = await utils.loadSqlQueries('events');
         const result = await pool.request()
-            .input('operateurId', sql.Int, operateurId)
-            .input('domiciliation', sql.NVarChar, domiciliation)
+            .input('operateurId', sql.VarChar, operateurId)
+            .input('TEL', sql.VarChar, etat.TEL)
+            .input('BANQUE', sql.VarChar, etat.BANQUE)
             .query(sqlQueries.updateOperateur);
 
         return result.rowsAffected[0] > 0;
@@ -319,7 +320,8 @@ const updateOperateur = async (operateurId, domiciliation) => {
 const updateLoyer = async (loyerId, data) => {
     try {
         let pool = await sql.connect(config.sql);
-        const sqlQueries = await utils.loadSqlQueries('events'); 
+        const sqlQueries = await utils.loadSqlQueries('events');
+
         const result = await pool.request()
             .input('loyerId', sql.VarChar, loyerId)
             .input('etat', sql.Int, data.ETAT)

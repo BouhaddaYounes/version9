@@ -168,20 +168,19 @@ const updateStation = async (req, res) => {
 
 const updateOperateur = async (req, res) => {
     try {
-        const operateurId = parseInt(req.params.id);
-        const { domiciliation } = req.body;
+        const operateurId = req.params.id;
+        const { TEL, BANQUE } = req.body;
 
-        if (!domiciliation || typeof domiciliation !== 'string') {
-            return res.status(400).json({ message: "Domiciliation invalide" });
+        if (!BANQUE || !TEL) {
+            return res.status(400).json({ message: 'Champs obligatoires manquants' });
         }
-
-        const success = await Data.updateOperateur(operateurId, domiciliation);
+        const success = await Data.updateOperateur(operateurId, { TEL, BANQUE });
 
         if (success) {
             res.status(200).json({ message: 'Domiciliation mise à jour avec succès' });
-        } else {
-            res.status(404).json({ message: 'Opérateur introuvable ou non modifié' });
-        }
+         } // } else {
+        //     res.status(404).json({ message: 'Opérateur introuvable ou non modifié' });
+        // }
     } catch (error) {
         console.error('Erreur dans updateOperateur:', error);
         res.status(500).json({ message: error.message });

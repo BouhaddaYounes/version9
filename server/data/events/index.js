@@ -317,15 +317,15 @@ const updateOperateur = async (operateurId, etat) => {
     }
 };
 
-const updateLoyer = async (loyerId, data) => {
+const updateLoyer = async (loyerId, data1) => {
     try {
         let pool = await sql.connect(config.sql);
         const sqlQueries = await utils.loadSqlQueries('events');
 
         const result = await pool.request()
             .input('loyerId', sql.VarChar, loyerId)
-            .input('etat', sql.Int, data.ETAT)
-            .input('typeLoyer', sql.Int, data.TYPE_LOYER)
+            .input('etat', sql.Int, data1.ETAT)
+            .input('typeLoyer', sql.Int, data1.TYPE_LOYER)
             .query(sqlQueries.updateLoyer);
 
         return result.rowsAffected[0] > 0;

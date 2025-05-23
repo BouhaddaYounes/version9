@@ -6,7 +6,7 @@ import { RootState } from '../store';
 interface Loyer {
   id: string;
   CODE_LOYER: string;
-  CODE_STATION: string;
+  // CODE_STATION: string;
   TYPE_LOYER: number;
   ETAT: number;
   [key: string]: any;

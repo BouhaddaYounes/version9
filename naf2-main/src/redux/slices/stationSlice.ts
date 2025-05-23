@@ -1,3 +1,4 @@
+
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { RootState } from '../store';
@@ -61,7 +62,7 @@ export const updateStation = createAsyncThunk(
   ) => {
     try {
       const response = await axios.put(
-        `${API_BASE_URL}/api/updateLoyer/${CODE_STATION}`,
+        `${API_BASE_URL}/api/updateStation/${CODE_STATION}`,
         { ETATS, TYPE_ACTIVITE }
       );
       return response.data;

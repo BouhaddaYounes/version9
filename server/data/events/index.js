@@ -4,6 +4,7 @@ const config = require('../../config');
 const sql = require('mssql');
 const bcrypt = require("bcryptjs");
 
+
 const insertMatricule = async (matricule, nomSession) => {
     try {
       let pool = await sql.connect(config.sql);
@@ -315,13 +316,14 @@ const updateOperateur = async (operateurId, domiciliation) => {
     }
 };
 
-const updateLoyer = async (loyerId, etat) => {
+const updateLoyer = async (loyerId, data) => {
     try {
         let pool = await sql.connect(config.sql);
         const sqlQueries = await utils.loadSqlQueries('events'); 
         const result = await pool.request()
             .input('loyerId', sql.VarChar, loyerId)
-            .input('etat', sql.Int, etat)
+            .input('etat', sql.Int, data.ETAT)
+            .input('typeLoyer', sql.Int, data.TYPE_LOYER)
             .query(sqlQueries.updateLoyer);
 
         return result.rowsAffected[0] > 0;
@@ -477,6 +479,5 @@ module.exports = {
     getuser ,insertMatricule,getAllProducts,createCategory ,createOrder,
     createProduct ,getProductsByCategory ,getAllOperateur, getAllLoyer, getAllContrat, getStationById, getLoyerById,
     updateStation
-
 
 }

@@ -3,6 +3,7 @@ import * as React from "react";
 
 import { AppDispatch } from '../redux/store';
 import {
+  fetchStations,
  updateStation,
 
 } from '../redux/slices/stationSlice';
@@ -25,6 +26,8 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 
+
+
 interface ModifyStationProps {
   station: {
     CODE_STATION: string;
@@ -37,6 +40,10 @@ interface ModifyStationProps {
 }
 
 export default function ModifyStation({ station }: ModifyStationProps) {
+const [loading, setLoading] = React.useState(false);
+const [error, setError] = React.useState<string | null>(null);
+
+
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -70,15 +77,26 @@ const ETATS = [1,2,3]
   CODE_DISTRICT: string;
   TYPE_ACTIVITE: number | "";
   ETATS: number | "";
-}>({
-  CODE_STATION: station.CODE_STATION,
-  NOM_STATION: station.NOM_STATION,
-  CODE_DISTRICT: station.CODE_DISTRICT,
-  TYPE_ACTIVITE: station.TYPE_ACTIVITE ?? "", // من الأفضل استخدام القيمة من الـ props
-  ETATS: station.ETATS ?? "",
+  }>({
+    CODE_STATION: station.CODE_STATION,
+    NOM_STATION: station.NOM_STATION,
+    CODE_DISTRICT: station.CODE_DISTRICT,
+    TYPE_ACTIVITE: station.TYPE_ACTIVITE ?? "", 
+    ETATS: station.ETATS ?? "",
 
-});
+  });
 
+ React.useEffect(() => {
+    if (open) {
+      setStation({
+        CODE_STATION: station.CODE_STATION,
+        NOM_STATION: station.NOM_STATION,
+        CODE_DISTRICT: station.CODE_DISTRICT,
+        TYPE_ACTIVITE: station.TYPE_ACTIVITE ?? "",
+        ETATS: station.ETATS ?? "",
+      });
+    }
+  }, [open]);
 
   // const UpdateStation= () => {
   //   console.log(Station)
@@ -87,18 +105,32 @@ const ETATS = [1,2,3]
   // };
   // console.log("Station", Station);
   const dispatch = useDispatch<AppDispatch>();
-const UpdateStation = () => {
-  dispatch(updateStation({
-  CODE_STATION: Station.CODE_STATION,
-  ETATS: Number(Station.ETATS),
-  TYPE_ACTIVITE: Number(Station.TYPE_ACTIVITE),
-}))
+    const UpdateStation = () => {
+      console.log("UpdateStation called");
+      setLoading(true);
+      setError(null);
+      dispatch(updateStation({
+      CODE_STATION: Station.CODE_STATION,
+      ETATS: Number(Station.ETATS),
+      TYPE_ACTIVITE: Number(Station.TYPE_ACTIVITE),
+    }))
     .unwrap()
+    // .then(() => {
+    //   dispatch(fetchStations());
+    //   handleClose();
     .then(() => {
+      console.log("Update success, fetching stations");
+      return dispatch(fetchStations());
+    })
+    .then(() => {
+      console.log("Stations fetched, closing dialog");
       handleClose();
     })
     .catch((err) => {
       console.error("Erreur lors de la mise à jour:", err.message);
+    })
+    .finally(() => {
+      setLoading(false);
     });
 };
 
@@ -113,30 +145,43 @@ const UpdateStation = () => {
       >
         <ArrowOutwardOutlinedIcon />
       </IconButton>
-     
+    
+
       <Dialog
             open={open}
             onClose={handleClose}
             slotProps={{
               paper: {
-                component: "form",
+                component: "form" as React.ElementType,
                 onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
                   event.preventDefault();
-                  dispatch(updateStation({
-                    CODE_STATION: Station.CODE_STATION,
-                    ETATS: Number(Station.ETATS),
-                    TYPE_ACTIVITE: Number(Station.TYPE_ACTIVITE),
-                  }))
-                    .unwrap()
-                    .then(() => {
-                      handleClose();
-                    })
-                    .catch((err) => {
-                      console.error("Erreur lors de la mise à jour:", err.message);
-                    });
+                  UpdateStation();
                 },
               },
             }}
+
+            // slotProps={{
+            //   paper: {
+            //     component: "form",
+            //     onSubmit: handleSubmit,
+            //     // onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+            //     //   event.preventDefault();
+            //     //   dispatch(updateStation({
+            //     //     CODE_STATION: Station.CODE_STATION,
+            //     //     ETATS: Number(Station.ETATS),
+            //     //     TYPE_ACTIVITE: Number(Station.TYPE_ACTIVITE),
+            //     //   }))
+            //     //     .unwrap()
+            //     //     .then(() => {
+            //     //       // dispatch(fetchStations());
+            //     //       handleClose();
+            //     //     })
+            //     //     .catch((err) => {
+            //     //       console.error("Erreur lors de la mise à jour:", err.message);
+            //     //     });
+            //     },
+            //   },
+            // }}
           >
             <DialogTitle>Modifier une station</DialogTitle>
             <DialogContent>
@@ -194,6 +239,7 @@ const UpdateStation = () => {
                 <FormControl fullWidth className="mb-4">
                   <InputLabel id="etat-select-label">ETAT</InputLabel>
                   <Select
+                    disabled={loading}
                     labelId="etat-select-label"
                     id="etat-select"
                     value={Station.ETATS}
@@ -207,13 +253,13 @@ const UpdateStation = () => {
                       let name = "";
                       switch (etat) {
                         case 0:
-                          name = "Operationel";
-                          break;
-                        case 1:
                           name = "Renovation";
                           break;
-                        case 2:
+                        case 1:
                           name = "Fermé";
+                          break;
+                        case 2:
+                          name = "Operationel";
                           break;
                       }
                       return (
@@ -229,6 +275,7 @@ const UpdateStation = () => {
               <FormControl fullWidth>
                 <InputLabel id="activite-select-label">Activité</InputLabel>
                 <Select
+                disabled={loading}
                   labelId="activite-select-label"
                   id="activite-select"
                   value={Station.TYPE_ACTIVITE}
@@ -237,6 +284,7 @@ const UpdateStation = () => {
                   onChange={(e) =>
                     setStation({ ...Station, TYPE_ACTIVITE: Number(e.target.value) })
                   }
+                  
                 >
                   {/* <MenuItem value={1}>HF</MenuItem>
                   <MenuItem value={2}>ABS</MenuItem> */}
@@ -263,7 +311,7 @@ const UpdateStation = () => {
 
             <DialogActions>
               <Button onClick={handleClose}>Annuler</Button>
-              <Button type="submit">Confirmer</Button>
+              <Button type="submit" disabled={loading}> {loading ? "En cours..." : "Confirmer"}</Button>
             </DialogActions>
           </Dialog>
 

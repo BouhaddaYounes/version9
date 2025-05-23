@@ -19,7 +19,6 @@ interface ModifyOperateurProps {
     ADRESSE: string;
     TEL: string;
     DOMICILIATION: string;
-
     NIF: string;
   };
 }

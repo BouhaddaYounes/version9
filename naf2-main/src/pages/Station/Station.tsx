@@ -71,7 +71,7 @@ const Station: React.FC = () => {
       },
     },
     {
-      field: "CODE_WILAYA",
+      field: "Wilaya",
       headerName: "WILAYA",
       flex: 1,
       align: "center",

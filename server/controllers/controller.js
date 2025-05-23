@@ -191,16 +191,21 @@ const updateOperateur = async (req, res) => {
 const updateLoyer = async (req, res) => {
     try {
         const loyerId = req.params.id;
-        const { etat } = req.body;
+        const ETAT = req.body.ETAT ?? req.body.etat;
+        const TYPE_LOYER = req.body.TYPE_LOYER ?? req.body.typeLoyer;
 
-        if (![0, 1].includes(etat)) {
+        if (![0, 1].includes(ETAT)) {
             return res.status(400).json({ message: "État invalide. Utilisez 0 ou 1." });
         }
-
-        const success = await Data.updateLoyer(loyerId, etat);
+        if (![1, 2, 3, 4, 5, 6].includes(TYPE_LOYER)) {
+            return res.status(400).json({ message: "Type de loyer invalide. Utilisez 1, 2, 3, 4, 5 ou 6." });
+        }
+        const success = await Data.updateLoyer(loyerId, { ETAT, TYPE_LOYER });
 
         if (success) {
-            res.status(200).json({ message: 'État du loyer mis à jour avec succès' });
+            // res.status(200).json({ message: 'État du loyer mis à jour avec succès' });
+            const updatedLoyer = await Data.getLoyerById(loyerId); // you need to write this
+            res.status(200).json(updatedLoyer);
         } else {
             res.status(404).json({ message: 'Loyer introuvable ou non modifié' });
         }
@@ -297,6 +302,54 @@ const addStation = async (req, res) => {
     }
 };
 
+
+// const addStation = async (req, res) => {
+//   try {
+//     const stationData = req.body;
+
+//     const TYPE_ACTIVITE = req.body.TYPE_ACTIVITE ?? req.body.activite;
+//     const ETATS = req.body.ETATS ?? req.body.etat;
+
+//     if (![1, 2].includes(Number(TYPE_ACTIVITE))) {
+//       return res.status(400).json({ message: "Activité invalide. Utilisez 1 ou 2." });
+//     }
+
+//     if (![0, 1, 2].includes(Number(ETATS))) {
+//       return res.status(400).json({ message: "État invalide. Utilisez 0, 1 ou 2." });
+//     }
+
+//     // 1. Get the current max CODE_STATION
+//     const lastCodeResult = await Data.getLastStationCode(); // You must create this
+//     const lastCode = lastCodeResult?.CODE_STATION || 0;
+
+//     // 2. Generate next code (just add +1)
+//     const nextCode = lastCode + 1;
+
+//     // 3. Prepare new station object
+//     const newStation = {
+//       CODE_STATION: nextCode,
+//       NOM_STATION: req.body.NOM,
+//       CODE_DISTRICT: req.body.CODE_DISTRICT,
+//       CODE_WILAYA: req.body.CODE_WILAYA,
+//       TYPE_ACTIVITE: Number(TYPE_ACTIVITE),
+//       ETATS: Number(ETATS),
+//       NBR_LOYER: 0,
+//       Wilaya: req.body.Wilaya,
+//     };
+
+//     // 4. Insert the station
+//     const success = await Data.addStation(newStation);
+
+//     if (success) {
+//       res.status(201).json({ message: "Station ajoutée avec succès" });
+//     } else {
+//       res.status(400).json({ message: "Échec de l'ajout de la station" });
+//     }
+//   } catch (error) {
+//     console.error("Erreur dans addStation:", error);
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 
 

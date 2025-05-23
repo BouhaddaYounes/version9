@@ -61,7 +61,7 @@ export const updateStation = createAsyncThunk(
   ) => {
     try {
       const response = await axios.put(
-        `${API_BASE_URL}/api/updateStation/${CODE_STATION}`,
+        `${API_BASE_URL}/api/updateLoyer/${CODE_STATION}`,
         { ETATS, TYPE_ACTIVITE }
       );
       return response.data;
@@ -106,6 +106,10 @@ export const updateStation = createAsyncThunk(
 //   }
 // );
 
+// add a new station
+// Async thunk for adding a station
+
+
 
 const stationSlice = createSlice({
   name: 'stations',
@@ -144,15 +148,26 @@ const stationSlice = createSlice({
       //   }
       //   state.loading = false;
       // })
-      .addCase(updateStation.fulfilled, (state, action) => {
-        state.loading = false;
-        const updatedStation = action.payload;
-        state.stations = state.stations.map(station =>
-          station.CODE_STATION === updatedStation.CODE_STATION
-            ? { ...station, ...updatedStation }
-            : station
-        );
-      })
+        // .addCase(updateStation.fulfilled, (state) => {
+        //   state.loading = false;
+        // })
+        .addCase(updateStation.fulfilled, (state, action: PayloadAction<Station>) => {
+            const index = state.stations.findIndex(s => s.CODE_STATION === action.payload.CODE_STATION);
+            if (index !== -1) {
+              state.stations[index] = action.payload;
+            }
+            state.loading = false;
+        })
+
+      // .addCase(updateStation.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   const updatedStation = action.payload;
+      //   state.stations = state.stations.map(station =>
+      //     station.CODE_STATION === updatedStation.CODE_STATION
+      //       ? { ...station, ...updatedStation }
+      //       : station
+      //   );
+      // })
       // .addCase(updateStation.rejected, (state, action) => {
       //   state.loading = false;
       //   state.error = action.error.message || 'Failed to update station';
@@ -161,6 +176,10 @@ const stationSlice = createSlice({
         state.loading = false;
         state.error = (action.payload as string) || action.error.message || 'Failed to update station';
       });
+
+      // Add add station cases
+      // Add Station
+
   },
 });
 
@@ -168,5 +187,8 @@ const stationSlice = createSlice({
 export const selectStations = (state: RootState) => state.stations?.stations ?? [];
 export const selectStationsLoading = (state: RootState) => state.stations?.loading ?? false;
 export const selectStationsError = (state: RootState) => state.stations?.error ?? null;
+
+
+
 
 export default stationSlice.reducer;

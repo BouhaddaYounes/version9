@@ -45,18 +45,59 @@ const Locaux: React.FC = () => {
       headerAlign: "center",
     },
     {
-      field: "SURFACE",
-      headerName: "SURFACE",
-      flex: 1,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "MONTANT",
-      headerName: "MONTANT",
-      flex: 1,
-      align: "center",
-      headerAlign: "center",
+    
+  field: "TYPE_LOYER",
+  headerName: "TYPE LOYER",
+  flex: 1,
+  align: "center",
+  headerAlign: "center",
+  renderCell: (params) => {
+    const row = params.row;
+    const etatText =
+      row.TYPE_LOYER === 1
+        ? "Restauration"
+        : row.TYPE_LOYER === 2
+        ? "Boutique"
+        : row.TYPE_LOYER === 3
+        ? "Lavage"
+        : row.TYPE_LOYER === 4
+        ? "Distributeur"
+        : row.TYPE_LOYER === 5
+        ? "Publicité"
+        : "Antenne";
+
+    return (
+      <Box
+        sx={{
+          textAlign: "center",
+          p: "5px",
+          width: "99px",
+          borderRadius: "3px",
+          margin: "7.5px",
+          backgroundColor:
+            etatText === "Restauration"
+              ? "red"
+              : etatText === "Boutique"
+              ? theme.palette.primary.dark
+              : etatText === "Lavage"
+              ? "#2196f3"
+              : etatText === "Distributeur"
+              ? "#9c27b0"
+              : etatText === "Publicité"
+              ? "#ff9800"
+              : "#4caf50", // Antenne or fallback
+          color: "white",
+          fontWeight: "bold",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        {etatText}
+      </Box>
+    );
+  },
     },
     {
       field: "ETAT",
@@ -65,7 +106,7 @@ const Locaux: React.FC = () => {
       align: "center",
       headerAlign: "center",
       renderCell: ({ row }) => {
-        const etatText = row.ETAT === 2 ? "Occupé" : row.ETAT === 1 ? "Libre" : "Autre";
+        const etatText = row.ETAT === 0 ? "Occupé" : row.ETAT === 1 ? "Libre" : "En attente";
         return (
           <Box
             sx={{

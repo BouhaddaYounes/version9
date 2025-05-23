@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { RootState } from '../store';
-
+// import { DataGrid, GridColDef } from '@mui/x-data-grid';
+// import { FormDialog } from '../../components/FormDialog';
 interface Loyer {
   id: string;
   CODE_LOYER: string;
   CODE_STATION: string;
-  SURFACE: number;
-  MONTANT: number;
+  TYPE_LOYER: number;
   ETAT: number;
   [key: string]: any;
 }
@@ -40,6 +40,24 @@ export const fetchLoyers = createAsyncThunk(
   }
 );
 
+export const updateLoyer = createAsyncThunk(
+  'loyers/updateLoyer',
+  async (
+    { CODE_LOYER, ETAT, TYPE_LOYER }: { CODE_LOYER: string; ETAT: number; TYPE_LOYER: number },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/api/updateLoyer/${CODE_LOYER}`,
+        { ETAT, TYPE_LOYER }
+      );
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to update loyer');
+    }
+  }
+);
+
 const loyerSlice = createSlice({
   name: 'loyers',
   initialState,
@@ -57,7 +75,28 @@ const loyerSlice = createSlice({
       .addCase(fetchLoyers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch loyers';
-      });
+      })
+
+      .addCase(updateLoyer.pending, (state) => { state.loading = true; })
+      // .addCase(updateLoyer.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   const index = state.loyers.findIndex(l => l.id === action.payload.id);
+      //   if (index !== -1) {
+      //     state.loyers[index] = action.payload;
+      //   }
+      // })
+      .addCase(updateLoyer.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.loyers.findIndex(l => l.CODE_LOYER === action.payload.CODE_LOYER);
+        if (index !== -1) {
+          state.loyers[index] = action.payload;
+        }
+      })
+
+      .addCase(updateLoyer.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || null;
+      })
   },
 });
 

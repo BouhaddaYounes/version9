@@ -218,27 +218,28 @@ const updateLoyer = async (req, res) => {
 
 const addLoyer = async (req, res) => {
     try {
-        const loyerData = req.body;
+        const {codeStation, etat, typeLoyer } = req.body;
 
-        const isValid = loyerData.codeLoyer && loyerData.codeStation && loyerData.typeLoyer !== undefined &&
-                        loyerData.etat !== undefined && loyerData.nom;
-
-        if (!isValid) {
+        // Validate required fields
+        if ( !codeStation || typeof typeLoyer === 'undefined' || typeof etat === 'undefined') {
             return res.status(400).json({ message: 'Champs manquants ou invalides' });
         }
 
-        const success = await Data.addLoyer(loyerData);
+        // You can add deeper validation if needed, e.g., value types, formats, etc.
 
-        if (success) {
-            res.status(201).json({ message: 'Loyer ajouté avec succès' });
+        const result = await Data.addLoyer({codeStation, etat, typeLoyer });
+
+        if (result) {
+            return res.status(201).json({ message: 'Loyer ajouté avec succès' });
         } else {
-            res.status(500).json({ message: 'Erreur lors de l\'ajout du loyer' });
+            return res.status(500).json({ message: 'Erreur lors de l\'ajout du loyer' });
         }
     } catch (error) {
-        console.error('Erreur dans le contrôleur addLoyer:', error.message);
-        res.status(500).json({ message: error.message });
+        console.error('Erreur dans le contrôleur addLoyer:', error);
+        return res.status(500).json({ message: 'Erreur interne du serveur' });
     }
 };
+
 
 
 const addContrat = async (req, res) => {

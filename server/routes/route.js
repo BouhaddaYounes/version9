@@ -2,6 +2,10 @@
 const express = require('express');
 const router = express.Router();
 
+const sql = require('mssql');
+const config = require('../config'); // عدل حسب مكان ملف الكونفيغ
+
+
 const controller = require('../controllers/controller');
  const {auth} = require ('../middleware/auth');
 
@@ -33,6 +37,30 @@ router.post('/api/addLoyer', controller.addLoyer);
 router.post('/api/addContrat', controller.addContrat);
 router.post('/api/addStation', controller.addStation);
 router.post('/api/addOperateur', controller.addOperateur);
+
+router.get('/api/stations/codes', async (req, res) => {
+  try {
+    const pool = await sql.connect(config.sql);
+    const result = await pool.request().query('SELECT CODE_STATION FROM [my_db].[dbo].[STATIONS]');
+
+    if (!result.recordset.length) {
+      return res.status(404).json({ message: 'No station codes found' });
+    }
+
+    const codes = result.recordset.map(row => row.CODE_STATION);
+    res.status(200).json(codes);  // ترجع مصفوفة الأكواد فقط
+  } catch (err) {
+    console.error('Erreur lors du chargement des codes station:', err);
+    res.status(500).json({
+      message: 'Erreur lors du chargement des codes station',
+      error: err.message,
+      stack: err.stack,
+    });
+  }
+});
+
+
+
 
 // router.get('/api/getAllCategories', controller.getAllCategories);
 // router.get('/api/getAllOrders', controller.getAllOrders);

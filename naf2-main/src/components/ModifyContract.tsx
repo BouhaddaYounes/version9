@@ -6,7 +6,6 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import AlarmIcon from "@mui/icons-material/Alarm";
 import ArrowOutwardOutlinedIcon from "@mui/icons-material/ArrowOutwardOutlined";
 import {
   FormControl,
@@ -17,7 +16,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 
-export default function FormDialogLoc() {
+export default function ModifyContract() {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -43,7 +42,7 @@ export default function FormDialogLoc() {
   return (
     <React.Fragment>
       <IconButton
-        aria-label="Modify client"
+        aria-label="Modify Station"
         variant="contained"
         onClick={handleClickOpen}
       >
@@ -66,72 +65,79 @@ export default function FormDialogLoc() {
           },
         }}
       >
-        <DialogTitle>Ajouter une Station</DialogTitle>
+        <DialogTitle>détail de contrat</DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
-          <div className="flex mb-4">
-            <div className="mr-4">
+          <div className="flex mb-2">
+            <div className="mr-7 mt-4 ">
               <TextField
-                className="mr-2"
-                autoFocus
-                required
-                margin="dense"
-                id="Nom"
-                name="Nom"
-                label="Nom"
-                type="text"
-                fullWidth
-                variant="standard"
+                className="w-65"
+                label="CODE STATION"
+                focused
+                value="#84486626"
+                disabled
               />
             </div>
-            <div>
+
+            <div className="mr-4 mt-4">
               <TextField
-                autoFocus
-                required
-                margin="dense"
-                id="Wilaya"
-                name="Wilaya"
-                label="Wilaya"
-                type="text"
-                fullWidth
-                variant="standard"
+                className="w-65"
+                label="CODE LOYER"
+                focused
+                value="#9569s49"
+                disabled
               />
             </div>
           </div>
-          <div className="mb-4">
-            <FormControl fullWidth className="mb-4">
-              <InputLabel id="demo-simple-select-label">ETAT</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={Etat}
-                label="Etat"
-                onChange={handleChange}
-              >
-                <MenuItem value={10}>Operationel</MenuItem>
-                <MenuItem value={20}>Renovation</MenuItem>
-                <MenuItem value={30}>Fermé</MenuItem>
-              </Select>
-            </FormControl>
+          <div className="flex mb-2">
+            <div className="mt-4 mr-2 w-65">
+              <TextField
+                label="TYPE LOYER"
+                focused
+                fullWidth
+                value="RESTAURANT"
+                disabled
+              />
+            </div>
+            <div className="mt-4 ml-4 w-65">
+              <TextField
+                label="DATE FACTURATION"
+                focused
+                fullWidth
+                type="text"
+                disabled
+              />
+            </div>
           </div>
 
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Activité</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={Activite}
-              label="Activité"
-              onChange={handleChange1}
-            >
-              <MenuItem value={1}>HF</MenuItem>
-              <MenuItem value={2}>ABS</MenuItem>
-            </Select>
-          </FormControl>
+          <div className="flex mb-2">
+            <div className="mt-4 mr-2 w-65">
+              <TextField
+                label="DATE VIGEUR"
+                focused
+                type="text"
+                fullWidth
+                disabled
+              />
+            </div>
+            <div className="mt-4 ml-4 w-65">
+              <TextField
+                label="DATE FIN"
+                focused
+                type="text"
+                value=""
+                fullWidth
+                disabled
+              />
+            </div>
+          </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Annuler</Button>
-          <Button type="submit">Ajouter</Button>
+          <div className="mr-5 mb-4">
+            <Button onClick={handleClose}>Fermer</Button>
+          </div>
+
+          {/*<Button type="submit">Confirmer</Button>*/}
         </DialogActions>
       </Dialog>
     </React.Fragment>

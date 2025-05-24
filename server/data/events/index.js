@@ -337,28 +337,66 @@ const updateLoyer = async (loyerId, data1) => {
 
 // Add
 
-const addLoyer = async (loyerData) => {
+// const addLoyer = async (loyerData) => {
+//     try {
+//         const { codeLoyer, codeStation, typeLoyer, etat, nom } = loyerData;
+
+//         let pool = await sql.connect(config.sql);
+
+//         await pool.request()
+//             .input('codeLoyer', sql.VarChar(50), codeLoyer)
+//             .input('codeStation', sql.VarChar(50), codeStation)
+//             .input('typeLoyer', sql.Int, typeLoyer)
+//             .input('etat', sql.Int, etat)
+//             .query(`INSERT INTO [my_db].[dbo].[LOYER] 
+//                     (CODE_LOYER, CODE_STATION, TYPE_LOYER, ETAT) 
+//                     VALUES (@codeLoyer, @codeStation, @typeLoyer, @etat)`);
+
+//         return true;
+//     } catch (error) {
+//         console.error('Erreur dans addLoyer:', error.message);
+//         return false;
+//     }
+// };
+const addLoyer = async (loyer) => {
     try {
-        const { codeLoyer, codeStation, typeLoyer, etat, nom } = loyerData;
+        const pool = await sql.connect(config.sql);
 
-        let pool = await sql.connect(config.sql);
+        // Step 1: get last CODE_LOYER and increment
+        const result = await pool.request().query(`
+            SELECT TOP 1 CODE_LOYER
+            FROM LOYER
+            WHERE ISNUMERIC(SUBSTRING(CODE_LOYER, 4, LEN(CODE_LOYER))) = 1
+            ORDER BY CAST(SUBSTRING(CODE_LOYER, 4, LEN(CODE_LOYER)) AS INT) DESC
+        `);
 
+        const lastCode = result.recordset[0]?.CODE_LOYER || "LOY0";
+        const nextId = parseInt(lastCode.replace("LOY", "")) + 1;
+        const newCode = `LOY${nextId}`;
+
+        // Step 2: insert the new loyer
         await pool.request()
-            .input('codeLoyer', sql.VarChar(50), codeLoyer)
-            .input('codeStation', sql.VarChar(50), codeStation)
-            .input('typeLoyer', sql.Int, typeLoyer)
-            .input('etat', sql.Int, etat)
-            .input('nom', sql.VarChar(50), nom)
-            .query(`INSERT INTO [my_db].[dbo].[LOYER] 
-                    (CODE_LOYER, CODE_STATION, TYPE_LOYER, ETAT, NOM) 
-                    VALUES (@codeLoyer, @codeStation, @typeLoyer, @etat, @nom)`);
+            .input('code_loyer', sql.VarChar(50), newCode)
+            .input('code_station', sql.VarChar(50), loyer.codeStation)
+            .input('type_loyer', sql.Int, loyer.typeLoyer)
+            .input('etat', sql.Int, loyer.etat)
+            .query(`
+                INSERT INTO LOYER (CODE_LOYER, CODE_STATION, TYPE_LOYER, ETAT)
+                VALUES (@code_loyer, @code_station, @type_loyer, @etat)
+            `);
 
-        return true;
+        return {
+            success: true,
+            newCode
+        };
     } catch (error) {
         console.error('Erreur dans addLoyer:', error.message);
-        return false;
+        return { success: false };
     }
 };
+
+
+
 
 const addContrat = async (contratData) => {
     try {

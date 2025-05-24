@@ -2,6 +2,7 @@ import { Box, useTheme } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { rows } from "../../data/datacontract";
 import ModifyLocal from "../../components/ModifyLocal";
+import ModifyContract from "../../components/ModifyContract";
 
 const Contract = () => {
   const columns: GridColDef[] = [
@@ -48,7 +49,7 @@ const Contract = () => {
       align: "center",
       headerAlign: "center",
       renderCell: ({}) => {
-        return <ModifyLocal />;
+        return <ModifyContract />;
       },
     },
   ];
@@ -65,6 +66,7 @@ const Contract = () => {
                 }}
               >
                 <p className="pt-2 text-2xl font-bold">CONTRACT</p>
+                //drtfyg//
               </div>
             </div>
           </div>

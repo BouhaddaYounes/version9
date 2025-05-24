@@ -9,8 +9,8 @@ import {
 } from '../../redux/slices/loyerSlice';
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { Box, Typography, useTheme } from "@mui/material";
-import FormDialog from "../../components/FormDialog";
 import ModifyLoyer from "../../components/ModifyLoyer";
+import FormDialogLoc from '../../components/FormDialogLoc';
 
 const Locaux: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -156,7 +156,7 @@ const Locaux: React.FC = () => {
               >
                 <p className="pt-2 text-2xl font-bold">LOCAUX</p>
                 <Box flexGrow={1} />
-                <FormDialog />
+                <FormDialogLoc onAddSuccess={() => dispatch(fetchLoyers())} />
               </div>
             </div>
           </div>

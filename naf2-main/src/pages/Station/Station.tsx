@@ -1,16 +1,12 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../redux/store';
-import {
-  fetchStations,
-  selectStations,
-  selectStationsLoading,
-  selectStationsError,
-} from '../../redux/slices/stationSlice';
+// Import selectors and async thunk correctly as named exports
+import { selectStations, selectStationsLoading, selectStationsError, fetchStations } from '../../redux/slices/stationSlice';
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { Box, Typography, useTheme } from "@mui/material";
 import FormDialog from "../../components/FormDialog";
-// import ModifyClient from "../../components/ModifyClient";
+// Fix casing here, make sure file and import casing matches exactly
 import ModifyStation from "../../components/Modifystation";
 
 const Station: React.FC = () => {
@@ -78,7 +74,7 @@ const Station: React.FC = () => {
       headerAlign: "center",
     },
     {
-      field: "NBR_loyer",
+      field: "NBR_LOYER",
       headerName: "NBR BOUTIQUE",
       flex: 1,
       align: "center",
@@ -129,7 +125,7 @@ const Station: React.FC = () => {
               sx={{ 
                 fontSize: "13px", 
                 color: "white",
-                fontWeight: "medium",
+                fontWeight: 500,  // Fix fontWeight to a valid value
                 textTransform: "capitalize"
               }}
             >

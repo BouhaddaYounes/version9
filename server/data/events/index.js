@@ -425,28 +425,186 @@ const addOperateur = async (operateur) => {
     }
 };
 
+// const addStation = async (station) => {
+//     try {
+//         let pool = await sql.connect(config.sql);
+//         const sqlQueries = await utils.loadSqlQueries('events');
+
+//         const result = await pool.request()
+//             .input('code_station', sql.VarChar(50), station.CODE_STATION)
+//             .input('nom_station', sql.VarChar(50), station.NOM_STATION)
+//             .input('code_district', sql.VarChar(3), station.CODE_DISTRICT)
+//             .input('code_wilaya', sql.VarChar(2), station.CODE_WILAYA)
+//             .input('type_activite', sql.Int, station.TYPE_ACTIVITE)
+//             .input('nbr_loyer', sql.Int, station.NBR_LOYER)
+//             .input('etats', sql.Int, station.ETATS)
+//             .input('wilaya', sql.VarChar(50), station.Wilaya)
+//             .query(sqlQueries.addStation);
+
+//         return result.rowsAffected[0] > 0;
+//     } catch (error) {
+//         console.error('Erreur dans addStation:', error.message);
+//         return false;
+//     }
+// };
+// const addStation = async (station) => {
+//     try {
+//         const pool = await sql.connect(config.sql);
+
+//         // Step 1: get last station code
+//         const result = await pool.request().query(`
+//             SELECT TOP 1 CODE_STATION
+//             FROM STATIONS
+//             WHERE ISNUMERIC(SUBSTRING(CODE_STATION, 3, LEN(CODE_STATION))) = 1
+//             ORDER BY CAST(SUBSTRING(CODE_STATION, 3, LEN(CODE_STATION)) AS INT) DESC
+//         `);
+
+//         const lastCode = result.recordset[0]?.CODE_STATION || "ST0";
+//         const nextId = parseInt(lastCode.replace("ST", "")) + 1;
+//         const newCode = `ST${nextId}`;
+
+//         // Step 2: load SQL and call stored procedure
+//         const sqlQueries = await utils.loadSqlQueries('events');
+
+//         const insertResult = await pool.request()
+//             .input('code_station', sql.VarChar(50), newCode)
+//             .input('nom_station', sql.VarChar(50), station.NOM_STATION)
+//             .input('code_district', sql.VarChar(3), station.CODE_DISTRICT)
+//             .input('code_wilaya', sql.VarChar(2), station.CODE_WILAYA)
+//             .input('type_activite', sql.Int, station.TYPE_ACTIVITE)
+//             .input('nbr_loyer', sql.Int, station.NBR_LOYER)
+//             .input('etats', sql.Int, station.ETATS)
+//             .input('wilaya', sql.VarChar(50), station.Wilaya)
+//             .query(sqlQueries.addStation);
+
+//         return {
+//             success: insertResult.rowsAffected[0] > 0,
+//             newCode
+//         };
+//     } catch (error) {
+//         console.error('Erreur dans addStation:', error.message);
+//         return { success: false };
+//     }
+// };
+
+const wilayaCodes = {
+  "Adrar": "01",
+  "Chlef": "02",
+  "Laghouat": "03",
+  "Oum El Bouaghi": "04",
+  "Batna": "05",
+  "Béjaïa": "06",
+  "Biskra": "07",
+  "Béchar": "08",
+  "Blida": "09",
+  "Bouira": "10",
+  "Tamanrasset": "11",
+  "Tébessa": "12",
+  "Tlemcen": "13",
+  "Tiaret": "14",
+  "Tizi Ouzou": "15",
+  "Alger": "16",
+  "Djelfa": "17",
+  "Jijel": "18",
+  "Sétif": "19",
+  "Saïda": "20",
+  "Skikda": "21",
+  "Sidi Bel Abbès": "22",
+  "Annaba": "23",
+  "Guelma": "24",
+  "Constantine": "25",
+  "Médéa": "26",
+  "Mostaganem": "27",
+  "M'Sila": "28",
+  "Mascara": "29",
+  "Ouargla": "30",
+  "Oran": "31",
+  "El Bayadh": "32",
+  "Illizi": "33",
+  "Bordj Bou Arreridj": "34",
+  "Boumerdès": "35",
+  "El Tarf": "36",
+  "Tindouf": "37",
+  "Tissemsilt": "38",
+  "El Oued": "39",
+  "Khenchela": "40",
+  "Souk Ahras": "41",
+  "Tipaza": "42",
+  "Mila": "43",
+  "Aïn Defla": "44",
+  "Naâma": "45",
+  "Aïn Témouchent": "46",
+  "Ghardaïa": "47",
+  "Relizane": "48",
+  // New wilayas after 2019 reform
+  "Bordj Badji Mokhtar": "49",
+  "Béni Abbès": "50",
+  "Timimoun": "51",
+  "Touggourt": "52",
+  "Djanet": "53",
+  "El M'Ghair": "54",
+  "El Meniaa": "55",
+  "Ouled Djellal": "56",
+  "Bordj Emir Abdelkader": "57",
+  "Béni Ikhlef": "58"
+};
+
+
 const addStation = async (station) => {
     try {
-        let pool = await sql.connect(config.sql);
+        const pool = await sql.connect(config.sql);
+
+        // Step 1: get last station code and increment
+        const result = await pool.request().query(`
+            SELECT TOP 1 CODE_STATION
+            FROM STATIONS
+            WHERE ISNUMERIC(SUBSTRING(CODE_STATION, 3, LEN(CODE_STATION))) = 1
+            ORDER BY CAST(SUBSTRING(CODE_STATION, 3, LEN(CODE_STATION)) AS INT) DESC
+        `);
+
+        const lastCode = result.recordset[0]?.CODE_STATION || "ST0";
+        const nextId = parseInt(lastCode.replace("ST", "")) + 1;
+        const newCode = `ST${nextId}`;
+
+        // Step 2: map Wilaya name to code
+        const codeWilaya = wilayaCodes[station.Wilaya];
+        if (!codeWilaya) {
+            throw new Error(`Wilaya code not found for: ${station.Wilaya}`);
+        }
+
+        // Step 3: load SQL query and insert
         const sqlQueries = await utils.loadSqlQueries('events');
 
-        const result = await pool.request()
-            .input('code_station', sql.VarChar(50), station.CODE_STATION)
+        const insertResult = await pool.request()
+            .input('code_station', sql.VarChar(50), newCode)
             .input('nom_station', sql.VarChar(50), station.NOM_STATION)
             .input('code_district', sql.VarChar(3), station.CODE_DISTRICT)
-            .input('code_wilaya', sql.VarChar(2), station.CODE_WILAYA)
+            .input('code_wilaya', sql.VarChar(2), codeWilaya)  // use mapped code
             .input('type_activite', sql.Int, station.TYPE_ACTIVITE)
             .input('nbr_loyer', sql.Int, station.NBR_LOYER)
             .input('etats', sql.Int, station.ETATS)
-            .input('wilaya', sql.VarChar(50), station.Wilaya)
+            .input('wilaya', sql.VarChar(50), station.Wilaya)  // keep the original name if you want
             .query(sqlQueries.addStation);
 
-        return result.rowsAffected[0] > 0;
+        return {
+            success: insertResult.rowsAffected[0] > 0,
+            newCode
+        };
     } catch (error) {
         console.error('Erreur dans addStation:', error.message);
-        return false;
+        return { success: false };
     }
 };
+
+async function getStationByCode(code) {
+    let pool = await sql.connect(config.sql);
+  const result = await pool
+    .request()
+    .input("code", sql.VarChar, code)
+    .query("SELECT CODE_STATION, NOM_STATION, CODE_DISTRICT, CODE_WILAYA, TYPE_ACTIVITE, NBR_LOYER, ETATS, Wilaya FROM STATIONS WHERE CODE_STATION = @code");
+
+  return result.recordset[0];
+}
 
 
 // const updateLoyer = async (loyerId, etat) => {
@@ -480,6 +638,6 @@ module.exports = {
     getAllStation,getAllCategories,getAllOrders, addStation,
     getuser ,insertMatricule,getAllProducts,createCategory ,createOrder,
     createProduct ,getProductsByCategory ,getAllOperateur, getAllLoyer, getAllContrat, getStationById, getLoyerById,
-    updateStation
+    updateStation, getStationByCode
 
 }

@@ -76,12 +76,16 @@ const ETATS = [1,2,3]
   CODE_STATION: string;
   NOM_STATION: string;
   CODE_DISTRICT: string;
+  Wilaya: string;
+  NBR_LOYER: number | "";
   TYPE_ACTIVITE: number | "";
   ETATS: number | "";
   }>({
     CODE_STATION: station.CODE_STATION,
     NOM_STATION: station.NOM_STATION,
     CODE_DISTRICT: station.CODE_DISTRICT,
+    Wilaya: station.Wilaya,
+    NBR_LOYER: station.NBR_LOYER ?? "",
     TYPE_ACTIVITE: station.TYPE_ACTIVITE ?? "", 
     ETATS: station.ETATS ?? "",
 
@@ -93,8 +97,10 @@ const ETATS = [1,2,3]
         CODE_STATION: station.CODE_STATION,
         NOM_STATION: station.NOM_STATION,
         CODE_DISTRICT: station.CODE_DISTRICT,
+        NBR_LOYER: station.NBR_LOYER ?? "",
         TYPE_ACTIVITE: station.TYPE_ACTIVITE ?? "",
         ETATS: station.ETATS ?? "",
+        Wilaya: station.Wilaya ?? "",
       });
     }
   }, [open]);
@@ -229,10 +235,13 @@ const ETATS = [1,2,3]
                   />
                 </div>
                 <div className="mt-4 mr-2">
-                  <TextField label="NBR BOUTIQUE" focused value="8" disabled />
+                  <TextField label="NBR BOUTIQUE" name="NBR_LOYER" focused value={Station.NBR_LOYER ?? ""}
+                     disabled
+                   />
                 </div>
                 <div className="mt-4">
-                  <TextField label="WILAYA" focused value="ORAN" disabled />
+                  <TextField label="WILAYA" name="Wilaya" focused value={Station.Wilaya ?? ""}
+                        disabled />
                 </div>
               </div>
 

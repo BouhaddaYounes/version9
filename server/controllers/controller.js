@@ -284,22 +284,44 @@ const addOperateur = async (req, res) => {
     }
 };
 
+// const addStation = async (req, res) => {
+//     try {
+//         const stationData = req.body;
+
+//         const success = await Data.addStation(stationData);
+
+//         if (success) {
+//             res.status(201).json({ message: "Station ajoutée avec succès" });
+//         } else {
+//             res.status(400).json({ message: "Échec de l'ajout de la station" });
+//         }
+//     } catch (error) {
+//         console.error('Erreur dans addStation:', error);
+//         res.status(500).json({ message: error.message });
+//     }
+// };
+
+
 const addStation = async (req, res) => {
-    try {
-        const stationData = req.body;
+  try {
+    const stationData = req.body;
+    const result = await Data.addStation(stationData);
 
-        const success = await Data.addStation(stationData);
+    if (result.success) {
+      // Fetch the newly created station from DB including CODE_STATION
+      const newStation = await Data.getStationByCode(result.newCode); // <-- Use your getStationByCode method here
 
-        if (success) {
-            res.status(201).json({ message: "Station ajoutée avec succès" });
-        } else {
-            res.status(400).json({ message: "Échec de l'ajout de la station" });
-        }
-    } catch (error) {
-        console.error('Erreur dans addStation:', error);
-        res.status(500).json({ message: error.message });
+      res.status(201).json(newStation);
+    } else {
+      res.status(400).json({ message: "Échec de l'ajout de la station" });
     }
+  } catch (error) {
+    console.error('Erreur dans addStation:', error);
+    res.status(500).json({ message: error.message });
+  }
 };
+
+
 
 
 // const addStation = async (req, res) => {

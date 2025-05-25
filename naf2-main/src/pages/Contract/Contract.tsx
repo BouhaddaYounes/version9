@@ -1,12 +1,25 @@
 import { Box, useTheme } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
-import { rows } from "../../data/datacontract";
-import ModifyLocal from "../../components/ModifyLocal";
+// import { rows } from "../../data/datacontract";
+// import ModifyLocal from "../../components/ModifyLocal";
 import ModifyContract from "../../components/ModifyContract";
-
+import FormDialogContrat from "../../components/FormDialogContract";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch } from "../../redux/store"; // Adjust the path if needed
+// Update the import path below if your contractSlice file is located elsewhere
+import { fetchContracts, selectContracts, selectContractsLoading } from "../../redux/slices/contractSlice";
 const Contract = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const contrats = useSelector(selectContracts) as any[];
+  const loading = useSelector(selectContractsLoading);
+
+  useEffect(() => {
+    dispatch(fetchContracts());
+  }, [dispatch]);
+
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 80 },
+    { field: "ID", headerName: "ID", width: 80 },
     {
       field: "NUM",
       headerName: "NUM",
@@ -15,15 +28,15 @@ const Contract = () => {
       headerAlign: "center",
     },
     {
-      field: "OPERATEURS",
-      headerName: "OPERATEURS",
+      field: "CODE_OPERATEUR",
+      headerName: "CODE OPERATEUR",
       flex: 1,
       align: "center",
       headerAlign: "center",
     },
     {
       field: "OBJET",
-      headerName: "OBJET",
+      headerName: "TYPE LOYER",
       flex: 1,
       align: "center",
       headerAlign: "center",
@@ -48,8 +61,8 @@ const Contract = () => {
       flex: 1,
       align: "center",
       headerAlign: "center",
-      renderCell: ({}) => {
-        return <ModifyContract />;
+       renderCell: (row) => {
+        return <ModifyContract contractId={Number(row.id)} />;
       },
     },
   ];
@@ -66,7 +79,8 @@ const Contract = () => {
                 }}
               >
                 <p className="pt-2 text-2xl font-bold">CONTRACT</p>
-                //drtfyg//
+                <Box flexGrow={1} />
+                <FormDialogContrat />
               </div>
             </div>
           </div>
@@ -74,8 +88,9 @@ const Contract = () => {
       </div>
       <Box sx={{ height: 650, width: "100%", mx: "auto" }}>
         <DataGrid
-          rows={rows}
+          rows={contrats}
           columns={columns}
+          getRowId={(row) => row.ID} 
           slots={{
             toolbar: GridToolbar,
           }}

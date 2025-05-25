@@ -1,11 +1,10 @@
 SELECT 
-    [ID],
-    [NUM],
-    [CODE_OPERATEUR],
+    [CODE_STATION],
+    [DATE_FACTURATION],
     [OBJET],
     [DATE_VIGEUR],
     [DATE_FIN],
-    [TAT_CONTROL]
+      [CODE_LOYER]
 FROM 
     [my_db].[dbo].[CONTRAT]
 WHERE 

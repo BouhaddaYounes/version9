@@ -90,8 +90,11 @@ const getContratById = async (req, res) => {
         const contratId = req.params.id;
      
         const contrat = await Data.getContratById(contratId);
-      
-        res.status(200).json(contrat);
+       if (contrat) {
+           res.json(contrat);
+       } else {
+           res.status(404).json({ message: "Contract not found" });
+       }
     } catch (error) {
         console.error('Error in getContratById:', error);
         res.status(500).json({ message: error.message });

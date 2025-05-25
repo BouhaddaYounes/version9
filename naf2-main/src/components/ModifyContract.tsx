@@ -7,36 +7,54 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import ArrowOutwardOutlinedIcon from "@mui/icons-material/ArrowOutwardOutlined";
-import {
-  FormControl,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material";
+import { IconButton } from "@mui/material";
+import { data } from "react-router-dom";
 
-export default function ModifyContract() {
+// Define props type
+interface ModifyContractProps {
+  contractId: number;
+}
+
+const ModifyContract: React.FC<ModifyContractProps> = ({ contractId }) => {
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
+  const [Activite, setActivite] = React.useState({
+    CODE_STATION: "",
+    CODE_LOYER: "",
+    TYPE_LOYER: "",
+    DATE_FACTURATION: "",
+    DATE_VIGEUR: "",
+    DATE_FIN: "",
+  });
+
+  const handleClickOpen = async () => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/getContratById/${contractId}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch contract data");
+    }
+    const jsonData = await response.json();
+    const contractData = jsonData[0]; // الوصول لأول عنصر في المصفوفة
+
+    setActivite({
+      CODE_STATION: contractData.CODE_STATION || "",
+      CODE_LOYER: contractData.CODE_LOYER || "",
+      TYPE_LOYER: contractData.OBJET || "", // لاحظ أن "TYPE_LOYER" غير موجود، استبدله بـ OBJET
+      DATE_FACTURATION: contractData.DATE_FACTURATION || "",
+      DATE_VIGEUR: contractData.DATE_VIGEUR || "",
+      DATE_FIN: contractData.DATE_FIN || "",
+    });
+
+
     setOpen(true);
-  };
+  } catch (error) {
+    console.error("Error fetching contract:", error);
+  }
+};
+
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const [Etat, setEtat] = React.useState("");
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setEtat(event.target.value as string);
-  };
-
-  const [Activite, setActivite] = React.useState("");
-
-  const handleChange1 = (event: SelectChangeEvent) => {
-    setActivite(event.target.value as string);
   };
 
   return (
@@ -48,54 +66,50 @@ export default function ModifyContract() {
       >
         <ArrowOutwardOutlinedIcon />
       </IconButton>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        slotProps={{
-          paper: {
-            component: "form",
-            onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-              event.preventDefault();
-              const formData = new FormData(event.currentTarget);
-              const formJson = Object.fromEntries((formData as any).entries());
-              const email = formJson.email;
-              console.log(email);
-              handleClose();
-            },
-          },
-        }}
-      >
+      <Dialog open={open} onClose={handleClose}>
         <DialogTitle>détail de contrat</DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
+
           <div className="flex mb-2">
-            <div className="mr-7 mt-4 ">
+            <div className="mr-7 mt-4">
               <TextField
                 className="w-65"
                 label="CODE STATION"
+                name="CODE_STATION"
                 focused
-                value="#84486626"
+                value={Activite.CODE_STATION} // Use data from the fetched contract
+                onChange={(e) =>
+                  setActivite({ ...Activite, CODE_STATION: e.target.value })
+                }
                 disabled
               />
             </div>
-
             <div className="mr-4 mt-4">
               <TextField
                 className="w-65"
                 label="CODE LOYER"
+                name="CODE_LOYER"
                 focused
-                value="#9569s49"
+                value={Activite.CODE_LOYER}
+                onChange={(e) =>
+                  setActivite({ ...Activite, CODE_LOYER: e.target.value })
+                }
                 disabled
               />
             </div>
           </div>
+
           <div className="flex mb-2">
             <div className="mt-4 mr-2 w-65">
               <TextField
                 label="TYPE LOYER"
                 focused
                 fullWidth
-                value="RESTAURANT"
+                value={Activite.TYPE_LOYER}
+                onChange={(e) =>
+                  setActivite({ ...Activite, TYPE_LOYER: e.target.value })
+                }
                 disabled
               />
             </div>
@@ -104,7 +118,10 @@ export default function ModifyContract() {
                 label="DATE FACTURATION"
                 focused
                 fullWidth
-                type="text"
+                value={Activite.DATE_FACTURATION}
+                onChange={(e) =>
+                  setActivite({ ...Activite, DATE_FACTURATION: e.target.value })
+                }
                 disabled
               />
             </div>
@@ -115,8 +132,11 @@ export default function ModifyContract() {
               <TextField
                 label="DATE VIGEUR"
                 focused
-                type="text"
                 fullWidth
+                value={Activite.DATE_VIGEUR}
+                onChange={(e) =>
+                  setActivite({ ...Activite, DATE_VIGEUR: e.target.value })
+                }
                 disabled
               />
             </div>
@@ -124,9 +144,11 @@ export default function ModifyContract() {
               <TextField
                 label="DATE FIN"
                 focused
-                type="text"
-                value=""
                 fullWidth
+                value={Activite.DATE_FIN}
+                onChange={(e) =>
+                  setActivite({ ...Activite, DATE_FIN: e.target.value })
+                }
                 disabled
               />
             </div>
@@ -136,10 +158,10 @@ export default function ModifyContract() {
           <div className="mr-5 mb-4">
             <Button onClick={handleClose}>Fermer</Button>
           </div>
-
-          {/*<Button type="submit">Confirmer</Button>*/}
         </DialogActions>
       </Dialog>
     </React.Fragment>
   );
-}
+};
+
+export default ModifyContract;

@@ -9,12 +9,11 @@ const config = require('../config'); // عدل حسب مكان ملف الكون
 const controller = require('../controllers/controller');
  const {auth} = require ('../middleware/auth');
 
-
-//get all 
+//get all
 
 
 router.get('/api/getAllStation', controller.getAllStation);
-router.get('/api/getAllOperateur', controller.getAllOperateur );
+router.get('/api/getAllOperateur', controller.getAllOperateur);
 router.get('/api/getAllLoyer', controller.getAllLoyer);
 router.get('/api/getAllContrat', controller.getAllContrat);
 
@@ -34,7 +33,45 @@ router.put('/api/updateOperateur/:id', controller.updateOperateur);
 
 // Add
 router.post('/api/addLoyer', controller.addLoyer);
+
 router.post('/api/addContrat', controller.addContrat);
+router.get('/api/loyer/:codeLoyer/objet', controller.getObjetByCodeLoyer);
+router.get('/api/operateurs/codes', async (req, res) => {
+  try {
+    const pool = await sql.connect(config.sql);
+    const result = await pool.request().query("SELECT CODE_OPERATEUR FROM [my_db].[dbo].[OPERATEUR] ");
+
+    if (!result.recordset.length) {
+      return res.status(404).json({ message: 'Aucun code opérateur trouvé' });
+    }
+
+    const codes = result.recordset.map(row => row.CODE_OPERATEUR);
+    res.status(200).json(codes);
+  } catch (err) {
+    console.error('Erreur opérateur:', err);
+    res.status(500).json({ message: 'Erreur chargement opérateurs', error: err.message });
+  }
+});
+
+// === /api/loyers/codes ===
+router.get('/api/loyers/codes', async (req, res) => {
+  try {
+    const pool = await sql.connect(config.sql);
+    const result = await pool.request().query("SELECT CODE_LOYER FROM [my_db].[dbo].[LOYER] WHERE ETAT = 1");
+
+    if (!result.recordset.length) {
+      return res.status(404).json({ message: 'Aucun code loyer trouvé' });
+    }
+
+    const codes = result.recordset.map(row => row.CODE_LOYER);
+    res.status(200).json(codes);
+  } catch (err) {
+    console.error('Erreur loyer:', err);
+    res.status(500).json({ message: 'Erreur chargement loyers', error: err.message });
+  }
+});
+
+
 router.post('/api/addStation', controller.addStation);
 router.post('/api/addOperateur', controller.addOperateur);
 

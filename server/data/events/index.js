@@ -398,45 +398,179 @@ const addLoyer = async (loyer) => {
 
 
 
+// const addContrat = async (contratData) => {
+//     try {
+//         let pool = await sql.connect(config.sql);
+//         await pool.request()
+//             .input('id', sql.Int, contratData.id)
+//             .input('num', sql.VarChar(50), contratData.num)
+//             .input('codeOperateur', sql.VarChar(10), contratData.codeOperateur)
+//             .input('objet', sql.VarChar(250), contratData.objet)
+//             .input('dateVigueur', sql.Date, contratData.dateVigueur)
+//             .input('codeStation', sql.VarChar(50), contratData.codeStation)
+//             .input('dateFacturation', sql.Date, contratData.dateFacturation)
+//             .input('assurance', sql.Real, contratData.assurance)
+//             .input('dateFin', sql.Date, contratData.dateFin)
+//             .input('chargeAvance', sql.Real, contratData.chargeAvance)
+//             .input('typePaiement', sql.VarChar(50), contratData.typePaiement)
+//             .input('codeLoyer', sql.VarChar(50), contratData.codeLoyer)
+//             .input('chargeF', sql.Real, contratData.chargeF)
+//             .input('loyerF', sql.Real, contratData.loyerF)
+//             .input('indexF', sql.Real, contratData.indexF)
+//             .input('chiffreF', sql.Real, contratData.chiffreF)
+//             .input('tatControl', sql.Int, contratData.tatControl)
+//             .input('nns', sql.Int, contratData.nns)
+//             .query(`INSERT INTO [my_db].[dbo].[CONTRAT] (
+//                 ID, NUM, CODE_OPERATEUR, OBJET, DATE_VIGEUR, CODE_STATION, 
+//                 DATE_FACTURATION, ASSURANCE, DATE_FIN, CHARGE_AVANCE, TYPE_PAIEMENT, 
+//                 CODE_LOYER, CHARGE_F, LOYER_F, INDEX_F, CHIFFRE_F, 
+//                 TAT_CONTROL, NNS
+//             ) VALUES (
+//                 @id, @num, @codeOperateur, @objet, @dateVigueur, @codeStation, 
+//                 @dateFacturation, @assurance, @dateFin, @chargeAvance, @typePaiement, 
+//                 @codeLoyer, @chargeF, @loyerF, @indexF, @chiffreF, 
+//                 @tatControl, @nns
+//             )`);
+//         return true;
+//     } catch (error) {
+//         console.error('Erreur dans addContrat:', error.message);
+//         return false;
+//     }
+// };
+// const addContrat = async (contratData) => {
+//     try {
+//         let pool = await sql.connect(config.sql);
+//         await pool.request()
+//             .input('num', sql.VarChar(50), contratData.num)
+//             .input('codeOperateur', sql.VarChar(10), contratData.codeOperateur)
+//             .input('dateVigueur', sql.Date, contratData.dateVigueur)
+//             .input('dateFacturation', sql.Date, contratData.dateFacturation || null)
+//             .input('dateFin', sql.Date, contratData.dateFin || null)
+//             .input('typePaiement', sql.VarChar(50), contratData.typePaiement)
+//             .input('codeLoyer', sql.VarChar(50), contratData.codeLoyer)
+//             .query(`
+//                 INSERT INTO [my_db].[dbo].[CONTRAT] (
+//                     NUM,
+//                     CODE_OPERATEUR,
+//                     OBJET,
+//                     DATE_VIGEUR,
+//                     CODE_STATION,
+//                     DATE_FACTURATION,
+//                     DATE_FIN,
+//                     TYPE_PAIEMENT,
+//                     CODE_LOYER
+//                 )
+//                 SELECT 
+//                     @num,
+//                     @codeOperateur,
+//                     CASE L.TYPE_LOYER
+//                         WHEN 1 THEN 'Restauration'
+//                         WHEN 2 THEN 'Boutique'
+//                         WHEN 3 THEN 'Lavage'
+//                         WHEN 4 THEN 'Distributeur'
+//                         WHEN 5 THEN 'Publicité'
+//                         WHEN 6 THEN 'Antenne'
+//                         ELSE 'Inconnu'
+//                     END,
+//                     @dateVigueur,
+//                     L.CODE_STATION,
+//                     @dateFacturation,
+//                     @dateFin,
+//                     @typePaiement,
+//                     @codeLoyer
+//                 FROM [my_db].[dbo].[LOYER] L
+//                 WHERE L.CODE_LOYER = @codeLoyer AND L.ETAT = 1
+//             `);
+//         return true;
+//     } catch (error) {
+//         console.error('Erreur dans addContrat:', error.message);
+//         return false;
+//     }
+// };
+const getObjetByCodeLoyer = async (codeLoyer) => {
+    try {
+        let pool = await sql.connect(config.sql);
+                const result = await pool.request().query(`
+            SELECT TOP 1 ID 
+            FROM CONTRAT
+            WHERE ISNUMERIC(ID) = 1
+            ORDER BY ID DESC
+        `);
+
+        const lastId = result.recordset[0]?.ID || 0;
+        const nextId = lastId + 1;
+
+       await pool.request()
+    .input('id', sql.Int, nextId)
+    .input('num', sql.VarChar(50), contratData.num)
+    .input('codeOperateur', sql.VarChar(10), contratData.codeOperateur)
+    .input('dateVigueur', sql.Date, contratData.dateVigueur)
+    .input('dateFacturation', sql.Date, contratData.dateFacturation)
+    .input('dateFin', sql.Date, contratData.dateFin)
+    .input('typePaiement', sql.VarChar(50), contratData.typePaiement)
+    .input('codeLoyer', sql.VarChar(50), contratData.codeLoyer)
+    .query(`
+        INSERT INTO [my_db].[dbo].[CONTRAT] (
+            ID, NUM, CODE_OPERATEUR, OBJET, DATE_VIGEUR, CODE_STATION,
+            DATE_FACTURATION, DATE_FIN, TYPE_PAIEMENT, CODE_LOYER
+        )
+        SELECT 
+            @id, @num, @codeOperateur, L.TYPE_LOYER, @dateVigueur, L.CODE_STATION,
+            @dateFacturation, @dateFin, @typePaiement, @codeLoyer
+        FROM [my_db].[dbo].[LOYER] L
+        WHERE L.CODE_LOYER = @codeLoyer AND L.ETAT = 1
+    `);
+        if (result.recordset.length > 0) {
+            return result.recordset[0].OBJET;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error('Erreur dans getObjetByCodeLoyer:', error.message);
+        return null;
+    }
+}
+
 const addContrat = async (contratData) => {
     try {
         let pool = await sql.connect(config.sql);
-        await pool.request()
-            .input('id', sql.Int, contratData.id)
-            .input('num', sql.VarChar(50), contratData.num)
-            .input('codeOperateur', sql.VarChar(10), contratData.codeOperateur)
-            .input('objet', sql.VarChar(250), contratData.objet)
-            .input('dateVigueur', sql.Date, contratData.dateVigueur)
-            .input('codeStation', sql.VarChar(50), contratData.codeStation)
-            .input('dateFacturation', sql.Date, contratData.dateFacturation)
-            .input('assurance', sql.Real, contratData.assurance)
-            .input('dateFin', sql.Date, contratData.dateFin)
-            .input('chargeAvance', sql.Real, contratData.chargeAvance)
-            .input('typePaiement', sql.VarChar(50), contratData.typePaiement)
-            .input('codeLoyer', sql.VarChar(50), contratData.codeLoyer)
-            .input('chargeF', sql.Real, contratData.chargeF)
-            .input('loyerF', sql.Real, contratData.loyerF)
-            .input('indexF', sql.Real, contratData.indexF)
-            .input('chiffreF', sql.Real, contratData.chiffreF)
-            .input('tatControl', sql.Int, contratData.tatControl)
-            .input('nns', sql.Int, contratData.nns)
-            .query(`INSERT INTO [my_db].[dbo].[CONTRAT] (
-                ID, NUM, CODE_OPERATEUR, OBJET, DATE_VIGEUR, CODE_STATION, 
-                DATE_FACTURATION, ASSURANCE, DATE_FIN, CHARGE_AVANCE, TYPE_PAIEMENT, 
-                CODE_LOYER, CHARGE_F, LOYER_F, INDEX_F, CHIFFRE_F, 
-                TAT_CONTROL, NNS
-            ) VALUES (
-                @id, @num, @codeOperateur, @objet, @dateVigueur, @codeStation, 
-                @dateFacturation, @assurance, @dateFin, @chargeAvance, @typePaiement, 
-                @codeLoyer, @chargeF, @loyerF, @indexF, @chiffreF, 
-                @tatControl, @nns
-            )`);
+                const result = await pool.request().query(`
+            SELECT TOP 1 ID 
+            FROM CONTRAT
+            WHERE ISNUMERIC(ID) = 1
+            ORDER BY ID DESC
+        `);
+        const lastId = result.recordset[0]?.ID || 0;
+        const nextId = lastId + 1;
+
+       await pool.request()
+    .input('id', sql.Int, nextId)
+    .input('num', sql.VarChar(50), contratData.num)
+    .input('codeOperateur', sql.VarChar(10), contratData.codeOperateur)
+    .input('dateVigeur', sql.Date, contratData.dateVigeur)
+    .input('dateFacturation', sql.Date, contratData.dateFacturation)
+    .input('dateFin', sql.Date, contratData.dateFin)
+    .input('typePaiement', sql.VarChar(50), contratData.typePaiement)
+    .input('codeLoyer', sql.VarChar(50), contratData.codeLoyer)
+    .query(`
+        INSERT INTO [my_db].[dbo].[CONTRAT] (
+            ID, NUM, CODE_OPERATEUR, OBJET, DATE_VIGEUR, CODE_STATION,
+            DATE_FACTURATION, DATE_FIN, TYPE_PAIEMENT, CODE_LOYER
+        )
+        SELECT 
+            @id, @num, @codeOperateur, L.TYPE_LOYER, @dateVigeur, L.CODE_STATION,
+            @dateFacturation, @dateFin, @typePaiement, @codeLoyer
+        FROM [my_db].[dbo].[LOYER] L
+        WHERE L.CODE_LOYER = @codeLoyer AND L.ETAT = 1
+    `);
         return true;
     } catch (error) {
         console.error('Erreur dans addContrat:', error.message);
         return false;
     }
 };
+
+
 
 
 const addOperateur = async (operateur) => {
@@ -574,7 +708,6 @@ const wilayaCodes = {
   "Aïn Témouchent": "46",
   "Ghardaïa": "47",
   "Relizane": "48",
-  // New wilayas after 2019 reform
   "Bordj Badji Mokhtar": "49",
   "Béni Abbès": "50",
   "Timimoun": "51",
@@ -672,10 +805,10 @@ async function getStationByCode(code) {
 
 module.exports = {
 
-   getContratById, getOperateurById, updateOperateur, updateLoyer, addLoyer, addContrat, addOperateur,
+   getContratById, getOperateurById, updateOperateur, updateLoyer, addLoyer, addContrat,  addOperateur,
     getAllStation,getAllCategories,getAllOrders, addStation,
     getuser ,insertMatricule,getAllProducts,createCategory ,createOrder,
     createProduct ,getProductsByCategory ,getAllOperateur, getAllLoyer, getAllContrat, getStationById, getLoyerById,
-    updateStation, getStationByCode
+    updateStation, getStationByCode, getObjetByCodeLoyer
 
 }

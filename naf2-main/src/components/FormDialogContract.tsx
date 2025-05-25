@@ -1,11 +1,224 @@
+// import * as React from "react";
+// import { useState, useEffect } from "react";
+// import axios from "axios";
+// import Button from "@mui/material/Button";
+// import TextField from "@mui/material/TextField";
+// import Dialog from "@mui/material/Dialog";
+// import DialogActions from "@mui/material/DialogActions";
+// import DialogContent from "@mui/material/DialogContent";
+// import DialogTitle from "@mui/material/DialogTitle";
+// import {
+//   FormControl,
+//   InputLabel,
+//   MenuItem,
+//   Select,
+//   SelectChangeEvent,
+// } from "@mui/material";
+// import { useDispatch } from "react-redux";
+// import { AppDispatch } from "../redux/store";
+// import { fetchContracts } from "../redux/slices/contractSlice";
+
+// export default function FormDialogContrat() {
+//   const dispatch = useDispatch<AppDispatch>();
+
+//   const [open, setOpen] = useState(false);
+
+//   const [selectedOperateur, setSelectedOperateur] = useState("");
+//   const [codeLoyer, setCodeLoyer] = useState("");
+//   const [typePaiement, setTypePaiement] = useState("");
+
+//   const [loadingOperateurs, setLoadingOperateurs] = useState(false);
+//   const [loadingLoyers, setLoadingLoyers] = useState(false);
+
+//   const [codeOperateurList, setCodeOperateurList] = useState<
+//     { CODE_OPERATEUR: string }[]
+//   >([]);
+//   const [codeLoyerList, setCodeLoyerList] = useState<
+//     { CODE_LOYER: string }[]
+//   >([]);
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         setLoadingOperateurs(true);
+//         setLoadingLoyers(true);
+
+//         const [opeRes, loyerRes] = await Promise.all([
+//           axios.get("http://localhost:5000/api/operateurs/codes"),
+//           axios.get("http://localhost:5000/api/loyers/codes"),
+//         ]);
+
+//         setCodeOperateurList(opeRes.data);
+//         setCodeLoyerList(loyerRes.data);
+//       } catch (err) {
+//         console.error("Erreur chargement données", err);
+//       } finally {
+//         setLoadingOperateurs(false);
+//         setLoadingLoyers(false);
+//       }
+//     };
+
+//     fetchData();
+//   }, []);
+
+//   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+//     event.preventDefault();
+//     const formData = new FormData(event.currentTarget);
+
+//     const payload = {
+//         num: NUM
+//         codeOperateur: selectedOperateur,
+//         codeLoyer: codeLoyer,
+//         typePaiement: typePaiement,
+//         dateFacturation: formData.get("DATE_FACTURATION"),
+//         dateFin: formData.get("DATE_FIN"),
+//         dateVigueur: formData.get("DATE_VIGEUR"),
+//     };
+
+
+//     try {
+//         console.log("Payload à envoyer :", payload);
+
+//      await axios.post("http://localhost:5000/api/addContrat", payload, {
+//         headers: { "Content-Type": "application/json" }
+//     });
+//       dispatch(fetchContracts());
+//       handleClose();
+//     } catch (err) {
+//       if (axios.isAxiosError(err)) {
+//             console.error("Erreur Axios:", err.response?.data || err.message);
+//         } else {
+//             console.error("Erreur inconnue:", err);
+//          }
+
+//     }
+//   };
+
+//   const handleClose = () => {
+//     setOpen(false);
+//   };
+
+//   return (
+//     <>
+//       <Button variant="contained" onClick={() => setOpen(true)}>
+//         + Contrat
+//       </Button>
+//       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+//         <form onSubmit={handleSubmit}>
+//           <DialogTitle>Ajouter un Contrat</DialogTitle>
+//           <DialogContent>
+//             <div className="flex mb-4">
+//               <FormControl fullWidth className="mr-4 mt-4" disabled={loadingOperateurs}>
+//                 <InputLabel>Code Opérateur</InputLabel>
+//                 <Select
+//                   label="Code Opérateur"
+//                   value={selectedOperateur}
+//                   onChange={(e) => setSelectedOperateur(e.target.value)}
+//                   required
+//                 >
+//                   <MenuItem value="" disabled>
+//                     Sélectionner un opérateur
+//                   </MenuItem>
+//                   {codeOperateurList.map((op) => (
+//                     <MenuItem key={op} value={op}>
+//                       {op}
+//                     </MenuItem>
+//                   ))}
+//                 </Select>
+//               </FormControl>
+
+//               <FormControl fullWidth className="mr-4 mt-4">
+//                 <InputLabel>Type de Paiement</InputLabel>
+//                 <Select
+//                   value={typePaiement}
+//                   onChange={(e: SelectChangeEvent) => setTypePaiement(e.target.value)}
+//                   label="Type de Paiement"
+//                   required
+//                 >
+//                   <MenuItem value="mensuel">Mensuel</MenuItem>
+//                   <MenuItem value="trimestriel">Trimestriel</MenuItem>
+//                   <MenuItem value="annuel">Annuel</MenuItem>
+//                 </Select>
+//               </FormControl>
+
+//               <FormControl fullWidth className="mr-4 mt-4" disabled={loadingLoyers}>
+//                 <InputLabel>Code Loyer</InputLabel>
+//                 <Select
+//                   value={codeLoyer}
+//                   onChange={(e) => setCodeLoyer(e.target.value)}
+//                   label="Code Loyer"
+//                   required
+//                 >
+//                   <MenuItem value="" disabled>
+//                     Sélectionner un loyer
+//                   </MenuItem>
+//                   {codeLoyerList.map((loyer) => (
+//                     <MenuItem key={loyer} value={loyer}>
+//                       {loyer}
+//                     </MenuItem>
+//                   ))}
+//                 </Select>
+//               </FormControl>
+//             </div>
+
+//             <div className="flex">
+//               <TextField
+//                 label="Code Contrat"
+//                 name="NUM"
+//                 fullWidth
+//                 required
+//                 className="mr-4"
+//               />
+//               <TextField
+//                 label="Date de Facturation"
+//                 name="DATE_FACTURATION"
+//                 type="date"
+//                 fullWidth
+//                 required
+//                 InputLabelProps={{ shrink: true }}
+//               />
+//             </div>
+
+//             <div className="flex mt-4">
+//               <TextField
+//                 label="Date Vigueur"
+//                 name="DATE_VIGEUR"
+//                 type="date"
+//                 fullWidth
+//                 required
+//                 className="mr-4"
+//                 InputLabelProps={{ shrink: true }}
+//               />
+//               <TextField
+//                 label="Date Fin"
+//                 name="DATE_FIN"
+//                 type="date"
+//                 fullWidth
+//                 required
+//                 InputLabelProps={{ shrink: true }}
+//               />
+//             </div>
+//           </DialogContent>
+//           <DialogActions>
+//             <Button onClick={handleClose}>Annuler</Button>
+//             <Button type="submit" variant="contained">
+//               Ajouter
+//             </Button>
+//           </DialogActions>
+//         </form>
+//       </Dialog>
+//     </>
+//   );
+// }
 
 import * as React from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import {
   FormControl,
@@ -14,177 +227,193 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../redux/store";
+import { fetchContracts } from "../redux/slices/contractSlice";
 
 export default function FormDialogContrat() {
-  const [open, setOpen] = React.useState(false);
+  const dispatch = useDispatch<AppDispatch>();
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const [open, setOpen] = useState(false);
 
-  const handleClose = () => {
+  const [selectedOperateur, setSelectedOperateur] = useState("");
+  const [selectedLoyer, setSelectedLoyer] = useState("");
+
+  const [loadingOperateurs, setLoadingOperateurs] = useState(false);
+  const [codeOperateurList, setCodeOperateurList] = useState<
+    { CODE_OPERATEUR: string }[]
+  >([]);
+
+  const [loadingLoyers, setLoadingLoyers] = useState(false);
+  const [codeLoyerList, setCodeLoyerList] = useState<
+    { CODE_LOYER: string }[]
+  >([]);
+
+  const [typePaiement, setTypePaiement] = useState<string>("");
+    const handleClose = () => {
     setOpen(false);
+    };
+
+ useEffect(() => {
+  const fetchData = async () => {
+    try {
+      setLoadingOperateurs(true);
+      setLoadingLoyers(true);
+
+      const [opeRes, loyerRes] = await Promise.all([
+        axios.get("http://localhost:5000/api/operateurs/codes"),
+        axios.get("http://localhost:5000/api/loyers/codes"),
+      ]);
+
+      console.log("Opérateurs:", opeRes.data); // 👈 check ici
+      console.log("Loyers:", loyerRes.data);   // 👈 check ici
+
+      setCodeOperateurList(opeRes.data);
+      setCodeLoyerList(loyerRes.data);
+    } catch (err) {
+      console.error("Erreur chargement données", err);
+    } finally {
+      setLoadingOperateurs(false);
+      setLoadingLoyers(false);
+    }
   };
 
-  const [type, setType] = React.useState("");
-  const [CODEOPE, setCODEOPE] = React.useState("");
+  fetchData();
+}, []);
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setType(event.target.value as string);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+
+  const formData = new FormData(event.currentTarget);
+  const payload = {
+    num: formData.get("CODE_CONTRAT"), // matches your input name
+    codeOperateur: selectedOperateur,  // camelCase
+    codeLoyer: selectedLoyer,           // camelCase
+    typePaiement: typePaiement,         // camelCase
+    dateFacturation: formData.get("DATE_FACTURATION"),
+    dateVigeur: formData.get("DATE_VIGEUR"),
+    dateFin: formData.get("DATE_FIN"),
   };
 
-  const handleChange2 = (event: SelectChangeEvent) => {
-    setCODEOPE(event.target.value as string);
-  };
-
-  const [Station, setStation] = React.useState("");
-
-  const handleChange1 = (event: SelectChangeEvent) => {
-    setStation(event.target.value as string);
-  };
+  try {
+    await axios.post("http://localhost:5000/api/addContrat", payload);
+    dispatch(fetchContracts());
+    handleClose();
+  } catch (err) {
+    console.error("Erreur lors de l'ajout du contrat", err);
+  }
+};
 
   return (
-    <React.Fragment>
-      <Button variant="contained" onClick={handleClickOpen}>
+    <>
+      <Button variant="contained" onClick={() => setOpen(true)}>
         + Contrat
       </Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        slotProps={{
-          paper: {
-            component: "form",
-            onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-              event.preventDefault();
-              const formData = new FormData(event.currentTarget);
-              const formJson = Object.fromEntries((formData as any).entries());
-              const email = formJson.email;
-              console.log(email);
-              handleClose();
-            },
-          },
-        }}
-      >
-        <DialogTitle>Ajouter une Contrat</DialogTitle>
-        <DialogContent>
-          <DialogContentText></DialogContentText>
-          <div className="flex mb-4">
-            <div className="mr-4 w-75 mt-4">
-              <FormControl fullWidth className="mb-">
-                <InputLabel id="demo-simple-select-label">
-                  CODE OPERATEUR
-                </InputLabel>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+        <form onSubmit={handleSubmit}>
+          <DialogTitle>Ajouter un Contrat</DialogTitle>
+          <DialogContent>
+            <div className="flex mb-4">
+              <FormControl fullWidth className="mr-4 mt-4" disabled={loadingOperateurs}>
+                <InputLabel>Code Opérateur</InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={CODEOPE}
+                  label="Opérateur"
+                  value={selectedOperateur}
+                  onChange={(e) => setSelectedOperateur(e.target.value)}
                   required
-                  label="CODE OPERATEUR"
-                  onChange={handleChange2}
                 >
-                  <MenuItem value={1}>OPE1</MenuItem>
-                  <MenuItem value={2}>OPE2</MenuItem>
-                  <MenuItem value={3}>OPE3</MenuItem>
-                  <MenuItem value={4}>OPE4</MenuItem>
-                  <MenuItem value={5}>OPE5</MenuItem>
+                  <MenuItem value="" disabled>
+                    Sélectionner un opérateur
+                  </MenuItem>
+                  {codeOperateurList.map((op) => (
+                    <MenuItem key={op} value={op}>
+                      {op}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth className="mr-4 mt-4">
+                <InputLabel>Type de Paiement</InputLabel>
+                <Select
+                  value={typePaiement}
+                  onChange={(e: SelectChangeEvent) => setTypePaiement(e.target.value)}
+                  label="Type de Paiement"
+                  required
+                >
+                  <MenuItem value="mensuel">Mensuel</MenuItem>
+                  <MenuItem value="trimestriel">Trimestriel</MenuItem>
+                  <MenuItem value="annuel">Annuel</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth className="mr-4 mt-4" disabled={loadingLoyers}>
+                <InputLabel>Code Loyer</InputLabel>
+                <Select
+                  value={selectedLoyer}
+                  onChange={(e) => setSelectedLoyer(e.target.value)}
+                  label="Code Loyer"
+                  required
+                >
+                  <MenuItem value="" disabled>
+                    Sélectionner un loyer
+                  </MenuItem>
+                  {codeLoyerList.map((loyer) => (
+                    <MenuItem key={loyer} value={loyer}>
+                      {loyer}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </div>
 
-
-<div className="mr-4 w-75 mt-4">
-              <FormControl fullWidth className="mb-">
-                <InputLabel id="demo-simple-select-label">
-                  CODE STATION
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={Station}
-                  required
-                  label="STATION"
-                  onChange={handleChange1}
-                >
-                  <MenuItem value={1}>STA1</MenuItem>
-                  <MenuItem value={2}>STA2</MenuItem>
-                  <MenuItem value={3}>STA3</MenuItem>
-                  <MenuItem value={4}>STA4</MenuItem>
-                  <MenuItem value={5}>STA5</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-            <div className="mr-4 w-75 mt-4">
-              <FormControl fullWidth className="mb-">
-                <InputLabel id="demo-simple-select-label">
-                  TYPE LOYER
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={type}
-                  required
-                  label="Type Loyer"
-                  onChange={handleChange}
-                >
-                  <MenuItem value={1}>WC</MenuItem>
-                  <MenuItem value={2}>RESTAURANT</MenuItem>
-                  <MenuItem value={3}>SUPERETTE</MenuItem>
-                  <MenuItem value={4}>LAVAGE</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-          </div>
-          <div className="flex">
-            <div className="w-75">
+            <div className="flex">
               <TextField
-                label="CODE CONTRAT"
-                focused
+                label="Code Contrat"
+                name="CODE_CONTRAT"
                 fullWidth
                 required
-                type="text"
-                name="DATE_DE_FACTURATION"
+                className="mr-4"
+              />
+              <TextField
+                label="Date de Facturation"
+                name="DATE_FACTURATION"
+                type="date"
+                fullWidth
+                required
+                InputLabelProps={{ shrink: true }}
               />
             </div>
-            <div className="w-75 mb-4 mr-4 ml-4 ">
-              <TextField
-                label="DATE DE FACTURATION"
-                focused
-                required
-                fullWidth
-                type="date"
-                name="DATE_DE_FACTURATION"
-              />
-            </div>
-          </div>
 
-          <div className="flex">
-            <div className="mb-4 w-65">
+            <div className="flex mt-4">
               <TextField
-                label="DATE VIGEUR"
-                focused
-                required
-                fullWidth
-                type="date"
+                label="Date Vigueur"
                 name="DATE_VIGEUR"
-              />
-            </div>
-            <div className="mb-4 ml-4 w-65">
-              <TextField
-                label="DATE FIN"
-                focused
-                required
-                fullWidth
                 type="date"
+                fullWidth
+                required
+                className="mr-4"
+                InputLabelProps={{ shrink: true }}
+              />
+              <TextField
+                label="Date Fin"
                 name="DATE_FIN"
+                type="date"
+                fullWidth
+                required
+                InputLabelProps={{ shrink: true }}
               />
             </div>
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Annuler</Button>
-          <Button type="submit">Ajouter</Button>
-        </DialogActions>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Annuler</Button>
+            <Button type="submit" variant="contained">
+              Ajouter
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
-    </React.Fragment>
+    </>
   );
 }

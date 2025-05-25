@@ -3,7 +3,7 @@ import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 // import { rows } from "../../data/datacontract";
 // import ModifyLocal from "../../components/ModifyLocal";
 import ModifyContract from "../../components/ModifyContract";
-import FormDialogContrat from "../../components/FormDialogContract";
+import FormDialogContract from "../../components/FormDialogContract";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "../../redux/store"; // Adjust the path if needed
@@ -34,13 +34,13 @@ const Contract = () => {
       align: "center",
       headerAlign: "center",
     },
-    {
-      field: "OBJET",
-      headerName: "TYPE LOYER",
-      flex: 1,
-      align: "center",
-      headerAlign: "center",
-    },
+    // {
+    //   field: "OBJET",
+    //   headerName: "TYPE LOYER",
+    //   flex: 1,
+    //   align: "center",
+    //   headerAlign: "center",
+    // },
     {
       field: "DATE_VIGEUR",
       headerName: "DATE VIGEUR",
@@ -74,13 +74,14 @@ const Contract = () => {
           <div className=" px-1 grid gap-3 grid-cols-12">
             <div className="col-span-12 h-20 p-4 rounded border border-stone-700">
               <div
+              className="flex"
                 style={{
                   color: theme.palette.primary.dark,
                 }}
               >
                 <p className="pt-2 text-2xl font-bold">CONTRACT</p>
                 <Box flexGrow={1} />
-                <FormDialogContrat />
+                <FormDialogContract />
               </div>
             </div>
           </div>

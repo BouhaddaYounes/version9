@@ -7,7 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import ArrowOutwardOutlinedIcon from "@mui/icons-material/ArrowOutwardOutlined";
-import { IconButton } from "@mui/material";
+import { IconButton, MenuItem } from "@mui/material";
 import { data } from "react-router-dom";
 
 // Define props type
@@ -97,11 +97,12 @@ const ModifyContract: React.FC<ModifyContractProps> = ({ contractId }) => {
                 }
                 disabled
               />
+              
             </div>
           </div>
 
           <div className="flex mb-2">
-            <div className="mt-4 mr-2 w-65">
+            {/* <div className="mt-4 mr-2 w-65">
               <TextField
                 label="TYPE LOYER"
                 focused
@@ -111,9 +112,11 @@ const ModifyContract: React.FC<ModifyContractProps> = ({ contractId }) => {
                   setActivite({ ...Activite, TYPE_LOYER: e.target.value })
                 }
                 disabled
+                
               />
-            </div>
-            <div className="mt-4 ml-4 w-65">
+              
+            </div> */}
+            <div className="mt-4 w-65">
               <TextField
                 label="DATE FACTURATION"
                 focused

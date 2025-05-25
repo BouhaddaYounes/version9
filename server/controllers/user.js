@@ -27,7 +27,8 @@ const loginUser = async (req, res, next) => {
     const result = await pool
       .request()
       .input('COMPTE', sql.VarChar, username)
-      .query('SELECT id, compte, pass FROM [dbo].[USER] WHERE COMPTE = @COMPTE');
+      .input('pass', sql.VarChar, password)
+      .query('SELECT Matricule, Role FROM [dbo].[USER] WHERE COMPTE = @COMPTE');
 
     const user = result.recordset[0];
 

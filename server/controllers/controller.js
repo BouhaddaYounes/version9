@@ -245,12 +245,74 @@ const addLoyer = async (req, res) => {
 
 
 
+// const addContrat = async (req, res) => {
+//     try {
+//         const contratData = req.body;
+
+//         // Validation rapide minimale
+//         if (!contratData.id || !contratData.num || !contratData.codeOperateur) {
+//             return res.status(400).json({ message: 'Champs obligatoires manquants' });
+//         }
+
+//         const success = await Data.addContrat(contratData);
+
+//         if (success) {
+//             res.status(201).json({ message: 'Contrat ajouté avec succès' });
+//         } else {
+//             res.status(500).json({ message: 'Erreur lors de l\'ajout du contrat' });
+//         }
+//     } catch (error) {
+//         console.error('Erreur dans le contrôleur addContrat:', error.message);
+//         res.status(500).json({ message: error.message });
+//     }
+// };
+
+// const addContrat = async (req, res) => {
+//     try {
+//         const {
+//             num,
+//             codeOperateur,
+//             objet,
+//             dateVigueur,
+//             dateFacturation,
+//             dateFin,
+//             typePaiement,
+//             codeLoyer
+//         } = req.body;
+
+//         // Validation minimale
+//         if (!num || !codeOperateur || !dateVigueur || !typePaiement || !codeLoyer) {
+//             return res.status(400).json({ message: 'Champs obligatoires manquants' });
+//         }
+
+//         const contratData = {
+//             num,
+//             codeOperateur,
+//             objet,
+//             dateVigueur,
+//             dateFacturation,
+//             dateFin,
+//             typePaiement,
+//             codeLoyer
+//         };
+
+//         const success = await Data.addContrat(contratData);
+
+//         if (success) {
+//             res.status(201).json({ message: 'Contrat ajouté avec succès' });
+//         } else {
+//             res.status(500).json({ message: 'Erreur lors de l\'ajout du contrat' });
+//         }
+//     } catch (error) {
+//         console.error('Erreur dans le contrôleur addContrat:', error.message);
+//         res.status(500).json({ message: error.message });
+//     }
+// };
 const addContrat = async (req, res) => {
     try {
         const contratData = req.body;
 
-        // Validation rapide minimale
-        if (!contratData.id || !contratData.num || !contratData.codeOperateur) {
+        if (!contratData.num || !contratData.codeOperateur || !contratData.codeLoyer) {
             return res.status(400).json({ message: 'Champs obligatoires manquants' });
         }
 
@@ -266,6 +328,32 @@ const addContrat = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
+
+
+
+const getObjetByCodeLoyer = async (req, res) => {
+    try {
+        const codeLoyer = req.params.codeLoyer;
+
+        const objet = await Data.getObjetByCodeLoyer(codeLoyer);
+
+        if (objet) {
+            res.status(200).json({ objet });
+        } else {
+            res.status(404).json({ message: 'Loyer non trouvé ou inactif' });
+        }
+    } catch (error) {
+        console.error('Erreur dans getObjetByCodeLoyer:', error.message);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+
+
+
 
 const addOperateur = async (req, res) => {
     try {
@@ -463,5 +551,6 @@ module.exports = {
     addLoyer,
     addContrat,
     addOperateur,
-    addStation
+    addStation,
+    getObjetByCodeLoyer
 };
